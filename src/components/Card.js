@@ -4,7 +4,7 @@ function Card({card}) {
     return ( 
         <div>
             <Paper sx={{margin: 1}}>
-                <Typography sx={{margin: 1}}> {card.content} </Typography>
+                <Typography sx={{margin: 1}}> {card.title} </Typography>
             </Paper>
         </div>
      );

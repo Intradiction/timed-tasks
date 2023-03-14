@@ -1,11 +1,27 @@
 import { Paper, InputBase, Button, IconButton } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear"
-import { useState } from "react";
+import { useContext, useState } from "react";
+import StoreApi from "../../utils/storeApi";
 
-function InputCard({setOpen}) {
+function InputCard({setOpen, listId}) {
 
-    const [cardTitle, setCardTitle] = useState(null);
-    const handleOnChange = (e) => {};
+    const [cardTitle, setCardTitle] = useState('');
+    const { addMoreCard } = useContext(StoreApi);
+
+    const handleOnChange = (e) => {
+        setCardTitle(e.target.value.toString());
+        console.log(cardTitle);
+    };
+    function handleBtnConfirm (){
+        console.log("handlingbtnconfirm, title: "+cardTitle);
+        addMoreCard(cardTitle, listId);
+        setCardTitle('');
+        setOpen(false);
+    }
+    const handleOnBlur = () => {
+        //setOpen(false);
+        //setCardTitle('');
+    }
 
     return ( 
         <div>
@@ -13,18 +29,19 @@ function InputCard({setOpen}) {
                 <Paper sx={{margin: 1}}>
                     <InputBase 
                         sx={{margin: 1}} 
-                        onChange={handleOnChange} 
+                        onChange={handleOnChange}
+                        onBlur={handleOnBlur} 
                         multiline 
                         fullWidth
-                        vale={cardTitle} 
+                        value={cardTitle} 
                         placeholder="enter card title"
                     />
                 </Paper>
             </div>
             <div>
-                <Button onClick={() => setOpen(false)}>Add Card</Button>
+                <Button onClick={handleBtnConfirm}>Add Card</Button>
                 <IconButton onClick={() => setOpen(false)}>
-                    <ClearIcon/>
+                    <ClearIcon />
                 </IconButton>
             </div>
         </div>

@@ -2,13 +2,13 @@ import { Collapse, Paper, Typography } from "@mui/material";
 import { useState } from "react";
 import InputCard from "./InputCard";
 
-function InputContainer() {
+function InputContainer({ listId }) {
 
     const [open, setOpen] = useState(false)
 
     return ( <div>
         <Collapse in={open}>
-            <InputCard setOpen={setOpen}/>
+            <InputCard setOpen={setOpen} listId={listId}/>
         </Collapse>
         <Collapse in={!open}>
             <Paper sx={{
