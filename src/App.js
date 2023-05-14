@@ -1,8 +1,16 @@
 import { useState } from 'react'
 import { v4 as uuid } from 'uuid'
+import InputContainer from './components/Input/InputContainer';
 import List from './components/List'
 import store from './utils/store'
 import StoreApi from './utils/storeApi';
+import { styled } from '@mui/system';
+
+const StyledDiv = styled('div')({
+  display: 'flex',
+  minHeight: '100vh',
+  background: '#32a852',
+});
 
 function App() {
 
@@ -32,12 +40,13 @@ function App() {
 
   return ( 
     <StoreApi.Provider value={{addMoreCard}}>
-      <div>
+      <StyledDiv>
         {data.listIds.map((listId)=>{
           const list = data.lists[listId];
           return <List list={list} key={listId}/>
         })}
-      </div>
+        <InputContainer type="list"/>
+      </StyledDiv>
     </StoreApi.Provider>
   );
 }

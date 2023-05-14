@@ -1,14 +1,21 @@
 import { Collapse, Paper, Typography } from "@mui/material";
+import { styled } from "@mui/system";
 import { useState } from "react";
 import InputCard from "./InputCard";
 
-function InputContainer({ listId }) {
+const StyledDiv = styled('div')({
+    width: '280px',
+    marginTop: '8px'
+});
+
+function InputContainer({ listId, type }) {
 
     const [open, setOpen] = useState(false)
 
-    return ( <div>
+    return ( 
+    <StyledDiv>
         <Collapse in={open}>
-            <InputCard setOpen={setOpen} listId={listId}/>
+            <InputCard setOpen={setOpen} listId={listId} type={type}/>
         </Collapse>
         <Collapse in={!open}>
             <Paper sx={{
@@ -22,11 +29,11 @@ function InputContainer({ listId }) {
                 }} onClick={()=> setOpen(!open)}>
 
                 
-                    <Typography sx={{margin: 1,}}>+ Add a Card</Typography>
+                    <Typography sx={{margin: 1,}}>{type === 'card' ? "+ Add a Card" : "+ Add a List"}</Typography>
             </Paper>        
         </Collapse>
 
-    </div> );
+    </StyledDiv> );
 }
 
 export default InputContainer;

@@ -3,20 +3,29 @@ import ClearIcon from "@mui/icons-material/Clear"
 import { useContext, useState } from "react";
 import StoreApi from "../../utils/storeApi";
 
-function InputCard({setOpen, listId}) {
+function InputCard({setOpen, listId, type}) {
 
-    const [cardTitle, setCardTitle] = useState('');
+    const [title, setCardTitle] = useState('');
     const { addMoreCard } = useContext(StoreApi);
 
     const handleOnChange = (e) => {
         setCardTitle(e.target.value.toString());
-        console.log(cardTitle);
+        console.log(title);
     };
-    function handleBtnConfirm (){
-        console.log("handlingbtnconfirm, title: "+cardTitle);
-        addMoreCard(cardTitle, listId);
-        setCardTitle('');
+    function handleBtnConfirm () {
+        if(type === 'card') {
+            console.log("handlingbtnconfirm, title: "+title);
+            addMoreCard(title, listId);
+            setCardTitle('');
+            setOpen(false);
+        } else {
+            //addMoreList(title);
+        }
+            
+    }
+    const handleBtnX = () => {
         setOpen(false);
+        setCardTitle('');   
     }
     const handleOnBlur = () => {
         //setOpen(false);
@@ -33,14 +42,14 @@ function InputCard({setOpen, listId}) {
                         onBlur={handleOnBlur} 
                         multiline 
                         fullWidth
-                        value={cardTitle} 
-                        placeholder="enter card title"
+                        value={title} 
+                        placeholder={type === 'card' ? "enter card title" : "enter list title"}
                     />
                 </Paper>
             </div>
             <div>
-                <Button onClick={handleBtnConfirm}>Add Card</Button>
-                <IconButton onClick={() => setOpen(false)}>
+                <Button onClick={handleBtnConfirm}>{type === 'card' ? "Add Card" : "Add List"}</Button>
+                <IconButton onClick={handleBtnX}>
                     <ClearIcon />
                 </IconButton>
             </div>
