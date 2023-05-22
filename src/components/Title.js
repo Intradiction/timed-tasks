@@ -20,7 +20,7 @@ function Title({title}) {
                 
             ) : (
                 <div style={{ display: 'flex' }}>                 
-                    <Typography onClick={()=>setOpen(!open)} sx={{marginLeft: 1, flexGrow: 1}}>{title}</Typography>
+                    <Typography variant='h5' onClick={()=>setOpen(!open)} sx={{marginLeft: 1, flexGrow: 1, fontWeight: 'bold'}}>{title}</Typography>
                     <MoreHorizIcon/>
                 </div>
             )}

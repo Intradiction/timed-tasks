@@ -11,10 +11,11 @@ function List({list}) {
                 sx={{
                     width: 300,
                     backgroundColor: '#EBECF0',
-                    marginLeft: 1
+                    marginLeft: 1,
+                    marginTop: 2,
                 }}>
                 <CssBaseline/>
-                <Title title={list.title}/>
+                <Title title={list.title} />
                 {list.cards.map((card) => (
                     <Card key={card.id} card={card}/>
                 ))}

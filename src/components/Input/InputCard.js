@@ -5,27 +5,27 @@ import StoreApi from "../../utils/storeApi";
 
 function InputCard({setOpen, listId, type}) {
 
-    const [title, setCardTitle] = useState('');
-    const { addMoreCard } = useContext(StoreApi);
+    const [title, setTitle] = useState('');
+    const { addMoreCard, addMoreList } = useContext(StoreApi);
 
     const handleOnChange = (e) => {
-        setCardTitle(e.target.value.toString());
+        setTitle(e.target.value.toString());
         console.log(title);
     };
     function handleBtnConfirm () {
         if(type === 'card') {
             console.log("handlingbtnconfirm, title: "+title);
             addMoreCard(title, listId);
-            setCardTitle('');
+            setTitle('');
             setOpen(false);
         } else {
-            //addMoreList(title);
+            addMoreList(title);
         }
             
     }
     const handleBtnX = () => {
         setOpen(false);
-        setCardTitle('');   
+        setTitle('');   
     }
     const handleOnBlur = () => {
         //setOpen(false);
