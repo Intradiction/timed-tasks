@@ -1,32 +1,51 @@
 import { InputBase, Typography } from "@mui/material";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz"
+import storeApi from "../utils/storeApi";
 
-function Title({title}) {
+function Title({title, listId}) {
+
     const [open, setOpen] = useState(false);
+    const [newTitle, setNewTitle] = useState('');
+    const {updateListTitle} = useContext(storeApi);
+
+    const handleOnChange = (e) => {
+        setNewTitle(e.target.value);
+    }
+
+    const handleOnBlur = () => {
+        updateListTitle(newTitle, listId);
+        setOpen(false);
+    }
+
     return (  
         <div>
             {open ? (
                 <div>
                     <InputBase 
-                        value={title}
+                        onChange={handleOnChange}
+                        autoFocus
+                        value={newTitle}
                         sx={{
                             marginLeft: 1
                         }}
-                        onBlur={()=> setOpen(!open)}
-                        />
-                    
-                </div>
-                
+                        variant='h5'
+                        onBlur={handleOnBlur}
+                    />
+                </div>  
             ) : (
                 <div style={{ display: 'flex' }}>                 
-                    <Typography variant='h5' onClick={()=>setOpen(!open)} sx={{marginLeft: 1, flexGrow: 1, fontWeight: 'bold'}}>{title}</Typography>
+                    <Typography 
+                        onClick={()=>setOpen(!open)} 
+                        sx={{marginLeft: 1, flexGrow: 1, fontWeight: 'bold'}}
+                        variant='h5'
+                    >
+                        {title}
+                    </Typography>
                     <MoreHorizIcon/>
                 </div>
             )}
-            
-            
-        </div>
+        </div> 
     );
 }
 

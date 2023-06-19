@@ -15,7 +15,7 @@ function List({list}) {
                     marginTop: 2,
                 }}>
                 <CssBaseline/>
-                <Title title={list.title} />
+                <Title title={list.title} listId={list.id}/>
                 {list.cards.map((card) => (
                     <Card key={card.id} card={card}/>
                 ))}
