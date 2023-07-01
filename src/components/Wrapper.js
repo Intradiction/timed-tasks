@@ -5,6 +5,7 @@ import List from './List'
 import store from '../utils/store'
 import StoreApi from '../utils/storeApi';
 import { styled } from '@mui/system';
+import { DragDropContext } from 'react-beautiful-dnd';
 
 const StyledDiv = styled('div')({
   display: 'flex',
@@ -70,15 +71,44 @@ function Wrapper() {
     console.log(`updating list with id = ${listId} to new title = ${title}`);
   }
 
+  const onDragEnd = (result) => {
+    const {destination, source, draggableId} = result;
+    console.log('destination:', destination, '\nsource:', source, draggableId)
+
+    const sourceList = data.lists[source.droppableId];
+    const destinationList = data.lists[source.droppableId];
+    const draggedCard = sourceList.cards.filter((card) => card.id === draggableId)[0];
+
+    // if the destination is null
+    if (!destination) {
+      return;
+    } 
+    // else if intralist dropping
+    else if (source.droppableID === destination.droppableID) {
+      sourceList.cards.splice(source.index, 1);
+      destinationList.cards.splice(destination.index, 0, draggedCard);
+      const newState = {
+        ...data,
+        lists: {
+          ...data.lists,
+          [sourceList.id]: destinationList, 
+        }
+      }
+      setData(newState);
+    }
+  }
+
   return ( 
     <StoreApi.Provider value={{addMoreCard, addMoreList, updateListTitle}}>
-      <StyledDiv>
-        {data.listIds.map((listId)=>{
-          const list = data.lists[listId];
-          return <List list={list} key={listId}/>
-        })}
-        <InputContainer type="list"/>
-      </StyledDiv>
+      <DragDropContext onDragEnd={onDragEnd}>
+        <StyledDiv>
+          {data.listIds.map((listId)=>{
+            const list = data.lists[listId];
+            return <List list={list} key={listId}/>
+          })}
+          <InputContainer type="list"/>
+        </StyledDiv>
+      </DragDropContext>
     </StoreApi.Provider>
   );
 }

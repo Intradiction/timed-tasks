@@ -4,7 +4,7 @@ import { AppBar } from '@mui/material';
 function TopBar() {
     return ( 
         <div>
-            <AppBar position='static' color="transparent" elevation={0}>
+            <AppBar position='static' color="primary" elevation={0}>
                 <h1>What Are Doing</h1>
             </AppBar>
         </div>
