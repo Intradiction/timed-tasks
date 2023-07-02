@@ -73,18 +73,20 @@ function Wrapper() {
 
   const onDragEnd = (result) => {
     const {destination, source, draggableId} = result;
-    console.log('destination:', destination, '\nsource:', source, draggableId)
+    console.log('destination:', destination, '\nsource:', source, '\ndraggableId', draggableId)
 
     const sourceList = data.lists[source.droppableId];
-    const destinationList = data.lists[source.droppableId];
+    const destinationList = data.lists[destination.droppableId];
     const draggedCard = sourceList.cards.filter((card) => card.id === draggableId)[0];
 
     // if the destination is null
-    if (!destination) {
+    if (destination == null) {
+      console.log('null dest');
       return;
     } 
     // else if intralist dropping
-    else if (source.droppableID === destination.droppableID) {
+    else if (source.droppableId === destination.droppableId) {
+      console.log('intralist dropping');
       sourceList.cards.splice(source.index, 1);
       destinationList.cards.splice(destination.index, 0, draggedCard);
       const newState = {
@@ -92,6 +94,21 @@ function Wrapper() {
         lists: {
           ...data.lists,
           [sourceList.id]: destinationList, 
+        }
+      }
+      setData(newState);
+    }
+    // else interlist dropping
+    else {
+      console.log('attemping to interlist drop')
+      sourceList.cards.splice(source.index, 1);
+      destinationList.cards.splice(destination.index, 0, draggedCard);
+      const newState = {
+        ...data,
+        lists: {
+          ...data.lists,
+          [sourceList.id]: sourceList, 
+          [destinationList.id]: destinationList, 
         }
       }
       setData(newState);
