@@ -40,6 +40,7 @@ function InputCard({setOpen, listId, type}) {
                         sx={{margin: 1}} 
                         onChange={handleOnChange}
                         onBlur={handleOnBlur} 
+                        onClick={console.log('lel')}
                         multiline 
                         fullWidth
                         value={title} 
