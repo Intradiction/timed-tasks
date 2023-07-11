@@ -6,7 +6,7 @@ import { TimePicker, LocalizationProvider} from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs from 'dayjs'
 
-function Card({card, index}) {
+function Card({card, index, isListActive}) {
     const [open, setOpen] = useState(false);
     const [newTitle, setNewTitle] = useState(card.title);
     
@@ -35,11 +35,24 @@ function Card({card, index}) {
         }
     }, [index])
 
-    // the timer is not paused by default, so we pause it on first load unless it's the first task
+    // // the timer is not paused by default, so we pause it on first load unless it's the first task
+    // useEffect(()=>{
+    //     console.log('loaded');
+    //     pause();
+    // }, [])
+
+    // when parent list's isActive property changes
     useEffect(()=>{
-        console.log('loaded');
+        console.log(`isParentActive: ${isListActive}`);
         pause();
-    }, [])
+
+        if (index === 0 && isListActive){
+            resume();
+        } else if (index === 0 && !isListActive) {
+            pause();
+        }
+
+    }, [isListActive])
     
 
     const handleOnChange = (e) => {
