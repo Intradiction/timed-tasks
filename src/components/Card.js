@@ -1,4 +1,4 @@
-import { InputBase, Paper, Typography } from "@mui/material"
+import { Button, InputBase, Paper, Typography } from "@mui/material"
 import { useEffect, useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import { useTimer } from 'react-timer-hook';
@@ -26,11 +26,11 @@ function Card({card, index, isListActive}) {
     } = useTimer({ expiryTimestamp, onExpire: () => console.warn('onExpire called')})
 
 
-    // if index changes, pause the new first card
+    // if index changes, pause all cards, then resume the new first card if list active
     useEffect(()=>{
         console.log('loaded');
         pause();
-        if(index === 0){
+        if(index === 0 && isListActive){
             resume();
         }
     }, [index])
@@ -43,7 +43,7 @@ function Card({card, index, isListActive}) {
 
     // when parent list's isActive property changes
     useEffect(()=>{
-        console.log(`isParentActive: ${isListActive}`);
+        //console.log(`isParentActive: ${isListActive}`);
         pause();
 
         if (index === 0 && isListActive){
@@ -64,14 +64,22 @@ function Card({card, index, isListActive}) {
         setOpen(false);
     }
 
-    // resume if the card is first on the list
-    const resumeIfFirst = () => {
-        console.log(`index: ${index}`);
+    const handleOnAccept = (value) => {
+        console.log(value);
+        
+        const time = new Date();
+        time.setSeconds(time.getSeconds() + value.$s);
+        time.setMinutes(time.getMinutes() + value.$m);
+        restart(time);
+    }
 
-        if(index === 0){
+    // resume if the card is first on the list
+    const handleOnTimerBlur = () => {
+        // console.log(`index: ${index}`);
+
+        if(index === 0 && isListActive){
             resume();
         }
-        
     }
 
     return ( 
@@ -84,6 +92,7 @@ function Card({card, index, isListActive}) {
                     ...provided.draggableProps.style,
                   }}>
                     <Paper sx={{margin: 1}}>
+                        <Button onClick={()=>{minutes+=1}}>Plus</Button>
                         {open ? (
                             <InputBase 
                                 onChange={handleOnChange}
@@ -98,12 +107,12 @@ function Card({card, index, isListActive}) {
                         <Typography sx={{margin: 1}} onClick={()=>setOpen(!open)} > {card.title} </Typography>
                         )}
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <div onClick={pause} onBlur={resumeIfFirst}>
+                            <div onClick={pause} onBlur={handleOnTimerBlur}>
                                 <TimePicker 
-                                    on
                                     value={dayjs(`${minutes}:${seconds}`, 'mm-ss')} 
                                     views={['minutes', 'seconds']} 
                                     format="mm:ss"
+                                    onAccept={handleOnAccept}
                                 />
                             </div>                  
                         </LocalizationProvider>
