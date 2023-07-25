@@ -25,35 +25,29 @@ function Card({card, index, isListActive}) {
         restart,
     } = useTimer({ expiryTimestamp, onExpire: () => console.warn('onExpire called')})
 
+    // resume if this card is first in list AND the list is active
+    const resumeIfSlated = () => {
+        if(index === 0 && isListActive){
+            start();
+            pause();
+            resume();
+            console.log('resumed')
+        }        
+    }
 
     // if index changes, pause all cards, then resume the new first card if list active
     useEffect(()=>{
-        console.log('loaded');
+        console.log('index changed');
         pause();
-        if(index === 0 && isListActive){
-            resume();
-        }
+        resumeIfSlated();
     }, [index])
-
-    // // the timer is not paused by default, so we pause it on first load unless it's the first task
-    // useEffect(()=>{
-    //     console.log('loaded');
-    //     pause();
-    // }, [])
 
     // when parent list's isActive property changes
     useEffect(()=>{
-        //console.log(`isParentActive: ${isListActive}`);
+        console.log('isActive changed')
         pause();
-
-        if (index === 0 && isListActive){
-            resume();
-        } else if (index === 0 && !isListActive) {
-            pause();
-        }
-
+        resumeIfSlated();
     }, [isListActive])
-    
 
     const handleOnChange = (e) => {
         setNewTitle(e.target.value);
@@ -64,21 +58,34 @@ function Card({card, index, isListActive}) {
         setOpen(false);
     }
 
+
+
+    const handleTPChange = (value) => {
+        const time = new Date();
+        time.setSeconds(time.getSeconds() + value.$s);
+        time.setMinutes(time.getMinutes() + value.$m);
+        restart(time);
+        console.log('pausing')
+        pause();
+    }
+
     const handleOnAccept = (value) => {
-        console.log(value);
-        
+        console.log('accepted')
         const time = new Date();
         time.setSeconds(time.getSeconds() + value.$s);
         time.setMinutes(time.getMinutes() + value.$m);
         restart(time);
     }
 
-    // resume if the card is first on the list
-    const handleOnTimerBlur = () => {
-        // console.log(`index: ${index}`);
+    const handleOnTPClose = () => {
+        console.log(`TP closed at index ${index}, isListActive: ${isListActive}`);
+        resumeIfSlated();
+    }
 
-        if(index === 0 && isListActive){
-            resume();
+    const handleOnTPBlur = (event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) {
+            //console.log('outside was actually clicked');
+            //resumeIfSlated();
         }
     }
 
@@ -92,7 +99,6 @@ function Card({card, index, isListActive}) {
                     ...provided.draggableProps.style,
                   }}>
                     <Paper sx={{margin: 1}}>
-                        <Button onClick={()=>{minutes+=1}}>Plus</Button>
                         {open ? (
                             <InputBase 
                                 onChange={handleOnChange}
@@ -107,12 +113,17 @@ function Card({card, index, isListActive}) {
                         <Typography sx={{margin: 1}} onClick={()=>setOpen(!open)} > {card.title} </Typography>
                         )}
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <div onClick={pause} onBlur={handleOnTimerBlur}>
+                            <div onClick={()=>{pause()}} onBlur={handleOnTPBlur}>
                                 <TimePicker 
                                     value={dayjs(`${minutes}:${seconds}`, 'mm-ss')} 
                                     views={['minutes', 'seconds']} 
                                     format="mm:ss"
                                     onAccept={handleOnAccept}
+                                    onChange={handleTPChange}
+                                    onClose={handleOnTPClose}
+                                    sx={{
+                                        width: "100%"
+                                    }}
                                 />
                             </div>                  
                         </LocalizationProvider>
