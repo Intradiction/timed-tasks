@@ -75,17 +75,8 @@ function Card({card, index, isListActive}) {
         console.log('pausing')
     }
  
-    const handleOnAccept = (value) => {
+    const handleOnAccept = () => {
         console.log('accepted')
-        // const time = new Date();
-        // time.setSeconds(time.getSeconds() + value.$s);
-        // time.setMinutes(time.getMinutes() + value.$m);
-        // restart(time, false);
-        resumeIfSlated();
-    }
- 
-    const handleOnTPClose = () => {
-        console.log(`TP closed at index ${index}, isListActive: ${isListActive}`);
         resumeIfSlated();
     }
  
@@ -103,11 +94,6 @@ function Card({card, index, isListActive}) {
         } else {
             resumeIfSlated();
         }
-    }
- 
-    const debugLog = () => {
-        console.log(`${minutes}:${seconds}`);
-        console.log(isRunning);
     }
  
     return ( 
@@ -139,19 +125,15 @@ function Card({card, index, isListActive}) {
                                     value={dayjs(`${minutes}:${seconds}`, 'mm-ss')} 
                                     views={['minutes', 'seconds']} 
                                     format="mm:ss"
-                                    //onOpen={()=>{console.log('div onclick'); pause()}}
                                     onSelectedSectionsChange={handleOnSSChange}
                                     onAccept={handleOnAccept}
                                     onChange={handleTPChange}
-                                    //onClose={handleOnTPClose}
                                     sx={{
                                         width: "100%"
                                     }}
                                 />
                             </div>                  
                         </LocalizationProvider>
-                       <button onClick={debugLog}>Debug</button>
-                       <button onClick={()=>{resume()}}>Resume</button>
                     </Paper>
                 </div>
             )}
