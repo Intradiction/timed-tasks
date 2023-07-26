@@ -48,7 +48,7 @@ function InputCard({setOpen, listId, type}) {
                 </Paper>
             </div>
             <div>
-                <Button onClick={handleBtnConfirm}>{type === 'card' ? "Add Card" : "Add List"}</Button>
+                <Button sx={{margin: 1}} variant="contained" color="secondary" onClick={handleBtnConfirm}>{type === 'card' ? "Add Card" : "Add List"}</Button>
                 <IconButton onClick={handleBtnX}>
                     <ClearIcon />
                 </IconButton>

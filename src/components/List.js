@@ -18,8 +18,8 @@ function List({list}) {
                 }}>
                 <CssBaseline/>
                 <Title title={list.title} listId={list.id}/>
-                <Button onClick={()=>{setIsActive(true)}}>Start</Button>
-                <Button onClick={()=>{setIsActive(false)}}>Pause</Button>
+                <Button variant="contained" sx={{margin: 1}} onClick={()=>{setIsActive(true)}}>Start</Button>
+                <Button variant="contained" sx={{margin: 1}} onClick={()=>{setIsActive(false)}}>Pause</Button>
                 <Droppable droppableId={list.id}>
                     {(provided)=>(
                         <div ref={provided.innerRef} {...provided.droppableProps}>

@@ -6,6 +6,7 @@ import store from '../utils/store'
 import StoreApi from '../utils/storeApi';
 import { styled } from '@mui/system';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import { Style } from '@mui/icons-material';
 
 const StyledDiv = styled('div')({
   display: 'flex',
@@ -122,12 +123,14 @@ function Wrapper() {
           <Droppable droppableId='app' type='list'>
             {(provided) => (
               <div ref={provided.innerRef} {...provided.droppableProps}>
+                <StyledDiv>
                 {data.listIds.map((listId)=>{
                   const list = data.lists[listId];
                   return <List list={list} key={listId}/>
                 })}
                 <InputContainer type="list"/> 
-                {provided.placeholder}            
+                {provided.placeholder}      
+                </StyledDiv>      
               </div>
             )}
           </Droppable>
