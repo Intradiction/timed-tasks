@@ -13,7 +13,8 @@ function Card({card, index, isListActive}) {
     const [newTitle, setNewTitle] = useState(card.title);
  
     const time = new Date();
-    time.setSeconds(time.getSeconds() + 300);
+    time.setSeconds(time.getSeconds() + card.timeLeft.seconds);
+    time.setMinutes(time.getMinutes() + card.timeLeft.minutes);
     let expiryTimestamp = time;
     const {
         seconds,
@@ -41,7 +42,10 @@ function Card({card, index, isListActive}) {
     }
  
     useEffect(()=>{
-        setTimeLeft(dayjs(`${minutes}:${seconds}`, 'mm-ss'));
+        card.timeLeft = {
+            minutes: minutes,
+            seconds: seconds
+        }
     }, [seconds])
  
     // if index changes, pause all cards, then resume the new first card if list active
@@ -117,7 +121,7 @@ function Card({card, index, isListActive}) {
                                 variant='h5'
                                 onBlur={handleOnBlur}/>
                         ) : (
-                        <Typography sx={{margin: 1}} onClick={()=>setOpen(!open)} > {card.title} </Typography>
+                            <Typography sx={{margin: 1}} onClick={()=>setOpen(!open)} > {card.title} </Typography>
                         )}
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <div  onBlur={handleOnTPBlur}>
