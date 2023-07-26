@@ -2,6 +2,7 @@ import { Paper, InputBase, Button, IconButton } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear"
 import { useContext, useState } from "react";
 import StoreApi from "../../utils/storeApi";
+import { Constants } from '../../constants';
 
 function InputCard({setOpen, listId, type}) {
 
@@ -15,7 +16,7 @@ function InputCard({setOpen, listId, type}) {
     function handleBtnConfirm () {
         if(type === 'card') {
             console.log("handlingbtnconfirm, title: "+title);
-            addMoreCard(title, listId);
+            addMoreCard(title, listId, Constants.CARD_DEFAULT_TIMELEFT);
             setTitle('');
             setOpen(false);
         } else {

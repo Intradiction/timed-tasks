@@ -6,8 +6,6 @@ import { TimePicker, LocalizationProvider} from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs from 'dayjs'
 
-// TODO: FIX interlist dropping resetting card time left to 5:00 
-
 function Card({card, index, isListActive}) {
     const [open, setOpen] = useState(false);
     const [newTitle, setNewTitle] = useState(card.title);

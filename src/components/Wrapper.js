@@ -17,12 +17,14 @@ const StyledDiv = styled('div')({
 function Wrapper() {
 
   const [data, setData] = useState(store);
-  const addMoreCard = (title, listId) => {
+  const addMoreCard = (title, listId, timeLeft) => {
     console.log("Adding new card with \ntitle: "+title+"\nlistId: "+listId+"\n");
+    console.log("timeLeft:" +JSON.stringify(timeLeft));
     const newCardId = uuid();
     const newCard = {
       id: newCardId,
       title,
+      timeLeft: timeLeft,
     };
 
     const list = data.lists[listId];
