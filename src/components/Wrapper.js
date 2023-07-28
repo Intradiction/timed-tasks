@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { v4 as uuid } from 'uuid'
 import InputContainer from '../components/Input/InputContainer';
 import List from './List'
@@ -17,6 +17,7 @@ const StyledDiv = styled('div')({
 function Wrapper() {
 
   const [data, setData] = useState(store);
+
   const addMoreCard = (title, listId, timeLeft) => {
     console.log("Adding new card with \ntitle: "+title+"\nlistId: "+listId+"\n");
     console.log("timeLeft:" +JSON.stringify(timeLeft));
@@ -76,6 +77,7 @@ function Wrapper() {
 
   const onDragEnd = (result) => {
     const {destination, source, draggableId, type} = result;
+    console.log('draggableID:'+draggableId)
     console.log('destination:', destination, '\nsource:', source, '\ndraggableId', draggableId)
 
     const sourceList = data.lists[source.droppableId];
@@ -118,10 +120,27 @@ function Wrapper() {
     }
   }
 
+  let api;
+  const useMyCoolSensor = value => {
+    api = value;
+  };
+
+  const startDrag = function start() {
+    const preDrag = api.tryGetLock("card-1");
+    if (!preDrag) {
+      return;
+    }
+
+    const drag = preDrag.snapLift();
+    drag.moveDown();
+    drag.drop();
+  }
+
   return ( 
     <StoreApi.Provider value={{addMoreCard, addMoreList, updateListTitle}}>
         <StyledDiv>
-        <DragDropContext onDragEnd={onDragEnd}>
+          <button onClick={startDrag}>bruh</button>
+        <DragDropContext sensors={[useMyCoolSensor]} onDragEnd={onDragEnd}>
           <Droppable droppableId='app' type='list'>
             {(provided) => (
               <div ref={provided.innerRef} {...provided.droppableProps}>

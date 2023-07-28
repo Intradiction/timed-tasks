@@ -35,7 +35,7 @@ function Card({card, index, isListActive}) {
             start();
             pause()
             resume();
-            console.log('resumed')
+            //console.log('resumed')
         }        
     }
  
@@ -48,14 +48,14 @@ function Card({card, index, isListActive}) {
  
     // if index changes, pause all cards, then resume the new first card if list active
     useEffect(()=>{
-        console.log('index changed');
+        //console.log('index changed');
         pause();
         resumeIfSlated();
     }, [index])
  
     // when parent list's isActive property changes
     useEffect(()=>{
-        console.log('isActive changed')
+        //console.log('isActive changed')
         pause();
         resumeIfSlated();
     }, [isListActive])
@@ -85,7 +85,7 @@ function Card({card, index, isListActive}) {
     const handleOnTPBlur = (event) => {
         console.log(event);
         if (event.relatedTarget === null) {
-            console.log('outside was actually clicked');
+            //console.log('outside was actually clicked');
             resumeIfSlated();
         }
     }
