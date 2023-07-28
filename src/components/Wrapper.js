@@ -7,6 +7,7 @@ import StoreApi from '../utils/storeApi';
 import { styled } from '@mui/system';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { Style } from '@mui/icons-material';
+import DoneList from './DoneList';
 
 const StyledDiv = styled('div')({
   display: 'flex',
@@ -145,12 +146,14 @@ function Wrapper() {
             {(provided) => (
               <div ref={provided.innerRef} {...provided.droppableProps}>
                 <StyledDiv>
-                {data.listIds.map((listId)=>{
-                  const list = data.lists[listId];
-                  return <List list={list} key={listId}/>
-                })}
-                <InputContainer type="list"/> 
-                {provided.placeholder}      
+                  
+                  {data.listIds.filter(listId => listId !== 'list-done').map((listId)=>{
+                    const list = data.lists[listId];
+                    return <List list={list} key={listId}/>
+                  })}
+                  <InputContainer type="list"/> 
+                  <DoneList list={data.lists['list-done']} key='list-done'/>
+                  {provided.placeholder}      
                 </StyledDiv>      
               </div>
             )}

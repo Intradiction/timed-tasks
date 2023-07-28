@@ -4,23 +4,21 @@ import Title from './Title'
 import Card from './Card'
 import InputContainer from "./Input/InputContainer";
 import { Droppable } from "react-beautiful-dnd";
-import { Constants } from '../constants';
+import { Constants } from "../constants";
 
-function List({list}) {
+function DoneList({list}) {
     const [isActive, setIsActive] = useState(false);
     return ( 
         <div>
             <Paper 
                 sx={{
                     width: 300,
-                    backgroundColor: Constants.LIST_COLOR,
+                    backgroundColor: Constants.DONELIST_COLOR,
                     marginLeft: 1,
                     marginTop: 2,
                 }}>
                 <CssBaseline/>
                 <Title title={list.title} listId={list.id}/>
-                <Button variant="contained" sx={{margin: 1}} onClick={()=>{setIsActive(true)}}>Start</Button>
-                <Button variant="contained" sx={{margin: 1}} onClick={()=>{setIsActive(false)}}>Pause</Button>
                 <Droppable droppableId={list.id}>
                     {(provided)=>(
                         <div ref={provided.innerRef} {...provided.droppableProps}>
@@ -32,11 +30,10 @@ function List({list}) {
                     )}
                     
                 </Droppable>
-                <InputContainer listId={list.id} type='card'/>
             </Paper>
             
         </div>
     );
 }
 
-export default List;
+export default DoneList;

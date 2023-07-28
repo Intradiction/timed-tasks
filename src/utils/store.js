@@ -32,8 +32,13 @@ const data = {
             title: 'Todo',
             cards,
         },
+        'list-done': {
+            id: 'list-done',
+            title: 'Done',
+            cards: []
+        },        
     },
-    listIds: ['list-1'],
+    listIds: ['list-1', 'list-done'],
 }
 
 export default data;
