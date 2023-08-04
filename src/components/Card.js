@@ -1,12 +1,15 @@
 import { Button, InputBase, Paper, Typography } from "@mui/material"
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import { useTimer } from 'react-timer-hook';
 import { TimePicker, LocalizationProvider} from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import dayjs from 'dayjs'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+import StoreApi from "../utils/storeApi";
+import { borderRadius } from "@mui/system";
 
-function Card({card, index, isListActive}) {
+function Card({card, index, isListActive, listWidth, listId}) {
+    const {moveToDone} = useContext(StoreApi);
     const [open, setOpen] = useState(false);
     const [newTitle, setNewTitle] = useState(card.title);
  
@@ -28,12 +31,10 @@ function Card({card, index, isListActive}) {
  
     const [timeLeft, setTimeLeft] = useState(dayjs(`${minutes}:${seconds}`, 'mm-ss'));
     
- 
     // resume if this card is first in list AND the list is active
     const resumeIfSlated = () => {
         if(index === 0 && isListActive){
-            start();
-            pause()
+
             resume();
             //console.log('resumed')
         }        
@@ -97,17 +98,37 @@ function Card({card, index, isListActive}) {
             resumeIfSlated();
         }
     }
- 
+    
+    const cardPaperRef = useRef(null);
+    const padding = 1, marginBottom = 8, borderRadius = 2;
+
+    const handleMoveToDone = () => { 
+        const cardHeight = cardPaperRef.current.clientHeight+marginBottom+(2*padding);
+
+        const cardProps = {
+            id: card.id,
+            index: index,
+            height: cardHeight,
+        }
+
+        const listProps = {
+            id: listId, 
+            width: listWidth,
+        }
+
+        moveToDone(cardProps, listProps);
+    }
+
     return ( 
         <Draggable draggableId={card.id} index={index}>
             {(provided)=>(
                 <div ref={provided.innerRef} {...provided.dragHandleProps} {...provided.draggableProps} style={{
-                    padding: 1,
-                    margin: "0 0 -8px 0",
-                    borderRadius: "2px",
+                    padding, 
+                    margin: "0 0 -"+marginBottom+"px 0",
+                    borderRadius: borderRadius+"px",
                     ...provided.draggableProps.style,
                   }}>
-                    <Paper sx={{margin: 1}}>
+                    <Paper ref={cardPaperRef} sx={{margin: 1}} elevation={4}>
                         {open ? (
                             <InputBase 
                                 onChange={handleOnChange}
@@ -136,6 +157,7 @@ function Card({card, index, isListActive}) {
                                 />
                             </div>                  
                         </LocalizationProvider>
+                        <button onClick={handleMoveToDone}>move to done</button>
                     </Paper>
                 </div>
             )}

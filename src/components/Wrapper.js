@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useRef } from 'react'
 import { v4 as uuid } from 'uuid'
 import InputContainer from '../components/Input/InputContainer';
 import List from './List'
@@ -8,6 +8,7 @@ import { styled } from '@mui/system';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { Style } from '@mui/icons-material';
 import DoneList from './DoneList';
+import * as tweenFunctions from "tween-functions";
 
 const StyledDiv = styled('div')({
   display: 'flex',
@@ -52,7 +53,7 @@ function Wrapper() {
     };
 
     const newState = {
-      listIds: [...data.listIds, newListId],
+      listIds: data.listIds.toSpliced(data.listIds.length-1, 0, newListId),
       lists: {
         ...data.lists,
         [newListId]: newList
@@ -78,8 +79,8 @@ function Wrapper() {
 
   const onDragEnd = (result) => {
     const {destination, source, draggableId, type} = result;
-    console.log('draggableID:'+draggableId)
-    console.log('destination:', destination, '\nsource:', source, '\ndraggableId', draggableId)
+    //console.log('draggableID:'+draggableId)
+    //console.log('destination:', destination, '\nsource:', source, '\ndraggableId', draggableId)
 
     const sourceList = data.lists[source.droppableId];
     const destinationList = data.lists[destination.droppableId];
@@ -91,7 +92,7 @@ function Wrapper() {
     } 
     // else if intralist dropping
     else if (source.droppableId === destination.droppableId) {
-      console.log('intralist dropping');
+      //console.log('intralist dropping');
       sourceList.cards.splice(source.index, 1);
       destinationList.cards.splice(destination.index, 0, draggedCard);
       const newState = {
@@ -105,8 +106,8 @@ function Wrapper() {
     }
     // else interlist dropping
     else {
-      console.log('interlist dropping')
-      console.log('type: '+type)
+      //console.log('interlist dropping')
+      //console.log('type: '+type)
       sourceList.cards.splice(source.index, 1);
       destinationList.cards.splice(destination.index, 0, draggedCard);
       const newState = {
@@ -126,40 +127,97 @@ function Wrapper() {
     api = value;
   };
 
-  const startDrag = function start() {
+  const useSnapSensor = value => {
+    api = value;
+  };
+
+  const snapToDone = function start() {
     const preDrag = api.tryGetLock("card-1");
+
+    if (!preDrag) {
+      return;
+    }
+    console.log('not returend')
+    const drag = preDrag.snapLift(start);
+
+    drag.moveRight();
+    drag.drop();
+  }
+
+  const moveToDone = function start(cardProps, listProps) {
+    const preDrag = api.tryGetLock(cardProps.id);
+
     if (!preDrag) {
       return;
     }
 
-    const drag = preDrag.snapLift();
-    drag.moveDown();
-    drag.drop();
+    const endX = doneListRef.current.offsetLeft, endY = doneListRef.current.offsetTop;
+
+    // The offsets take into account the card's position, as well as any window scroll
+    const listIndex = data.listIds.indexOf(listProps.id);
+    console.log('list index for moveToDone: '+listIndex)
+    const offsetY = 2*cardProps.height+(cardProps.height*cardProps.index)-window.scrollY, offsetX = listProps.width*listIndex+(Math.max(
+      document.body.scrollWidth, document.documentElement.scrollWidth,
+      document.body.offsetWidth, document.documentElement.offsetWidth,
+      document.body.clientWidth, document.documentElement.clientWidth
+    )-document.body.clientWidth); 
+    const start = { x: 0, y: 0 }; 
+    const end = { x: endX-offsetX, y: endY-offsetY };
+    const drag = preDrag.fluidLift(start);
+
+    const points = [];
+
+    const numberOfPoints = 100;
+
+    for (let i = 0; i < numberOfPoints; i++) {
+      points.push({
+        x: tweenFunctions.easeOutSine(i, start.x, end.x, numberOfPoints),
+        y: tweenFunctions.easeOutSine(i, start.y, end.y, numberOfPoints)
+      });
+    }
+    moveStepByStep(drag, points);
   }
 
+  function moveStepByStep(drag, values) {
+    requestAnimationFrame(() => {
+      const newPosition = values.shift();
+      console.log(`newX: ${newPosition.x}, newY: ${newPosition.y}`);
+      drag.move(newPosition);
+  
+      if (values.length) {
+        moveStepByStep(drag, values);
+      } else {
+        //drag.drop();
+      }
+    });
+  }
+
+  const doneListRef = useRef(null);
+
   return ( 
-    <StoreApi.Provider value={{addMoreCard, addMoreList, updateListTitle}}>
-        <StyledDiv>
-          <button onClick={startDrag}>bruh</button>
-        <DragDropContext sensors={[useMyCoolSensor]} onDragEnd={onDragEnd}>
+    <StoreApi.Provider value={{addMoreCard, addMoreList, updateListTitle, moveToDone}}>
+      <StyledDiv>
+        <DragDropContext sensors={[useMyCoolSensor, useSnapSensor]} onDragEnd={onDragEnd}>
           <Droppable droppableId='app' type='list'>
             {(provided) => (
               <div ref={provided.innerRef} {...provided.droppableProps}>
                 <StyledDiv>
-                  
+                  {/* <button onClick={snapToDone}>snap</button> */}
                   {data.listIds.filter(listId => listId !== 'list-done').map((listId)=>{
                     const list = data.lists[listId];
                     return <List list={list} key={listId}/>
                   })}
                   <InputContainer type="list"/> 
-                  <DoneList list={data.lists['list-done']} key='list-done'/>
+                  <div style={{backgroundColor: 'none'}} className="bruh" ref={doneListRef}>
+                    <DoneList list={data.lists['list-done']} key='list-done'/>
+                  </div>
                   {provided.placeholder}      
                 </StyledDiv>      
               </div>
             )}
           </Droppable>
-          </DragDropContext>
-        </StyledDiv>
+        </DragDropContext>
+      </StyledDiv>
     </StoreApi.Provider>
   );
 }

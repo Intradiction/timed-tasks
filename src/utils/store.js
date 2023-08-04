@@ -22,6 +22,30 @@ const cards = [
             minutes: 30,
             seconds: 0,
         }
+    },
+    {
+        id: 'card-4',
+        title: 'test card 4',
+        timeLeft: {
+            minutes: 5,
+            seconds: 0,
+        }
+    },
+    {
+        id: 'card-5',
+        title: 'test card 5',
+        timeLeft: {
+            minutes: 12,
+            seconds: 34,
+        }
+    },
+    {
+        id: 'card-6',
+        title: 'test card 6',
+        timeLeft: {
+            minutes: 30,
+            seconds: 0,
+        }
     }
 ];
 
