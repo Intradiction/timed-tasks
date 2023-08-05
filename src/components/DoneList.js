@@ -23,7 +23,7 @@ function DoneList({list}) {
                     {(provided)=>(
                         <div ref={provided.innerRef} {...provided.droppableProps}>
                             {list.cards.map((card, index) => (
-                                <Card key={card.id} card={card} index={index} isListActive={isActive}/>
+                                <Card key={card.id} card={card} index={index} isListActive={isActive} listId={list.id}/>
                             ))}
                             {provided.placeholder}
                         </div>

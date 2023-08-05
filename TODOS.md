@@ -10,3 +10,5 @@
 
 # Known Bugs
 - The first click on a lists title clears the title
+- Clicking on a Card's title and menu icon does not pause the timer 
+- Clicking on a Card's clock icon twice does not resume the timer
