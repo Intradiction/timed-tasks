@@ -8,11 +8,13 @@ import { Constants } from '../constants';
 
 function List({list}) {
     const [isActive, setIsActive] = useState(false);
+    const listWidthWeb = 300;
+
     return ( 
         <div>
             <Paper 
                 sx={{
-                    width: 300,
+                    width: listWidthWeb,
                     backgroundColor: Constants.LIST_COLOR,
                     marginLeft: 1,
                     marginTop: 2,
@@ -25,7 +27,7 @@ function List({list}) {
                     {(provided)=>(
                         <div ref={provided.innerRef} {...provided.droppableProps}>
                             {list.cards.map((card, index) => (
-                                <Card key={card.id} card={card} index={index} isListActive={isActive}/>
+                                <Card key={card.id} card={card} index={index} isListActive={isActive} listWidth={listWidthWeb} listId={list.id}/>
                             ))}
                             {provided.placeholder}
                         </div>

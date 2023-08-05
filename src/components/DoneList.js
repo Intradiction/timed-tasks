@@ -15,7 +15,7 @@ function DoneList({list}) {
                     width: 300,
                     backgroundColor: Constants.DONELIST_COLOR,
                     marginLeft: 1,
-                    marginTop: 2,
+                    marginTop: '15px',
                 }}>
                 <CssBaseline/>
                 <Title title={list.title} listId={list.id}/>
