@@ -1,4 +1,7 @@
-import { Button, InputBase, Paper, Typography } from "@mui/material"
+import { Button, InputBase, Paper, Typography, Menu, MenuItem } from "@mui/material"
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz"
+import DoneIcon from '@mui/icons-material/Done';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useContext, useEffect, useState, useRef } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import { useTimer } from 'react-timer-hook';
@@ -6,10 +9,10 @@ import { TimePicker, LocalizationProvider} from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import StoreApi from "../utils/storeApi";
-import { borderRadius } from "@mui/system";
+import { borderRadius, maxHeight } from "@mui/system";
 
 function Card({card, index, isListActive, listWidth, listId}) {
-    const {moveCardToList} = useContext(StoreApi);
+    const {moveCardToList, deleteCard} = useContext(StoreApi);
     const [open, setOpen] = useState(false);
     const [newTitle, setNewTitle] = useState(card.title);
  
@@ -109,6 +112,26 @@ function Card({card, index, isListActive, listWidth, listId}) {
         moveCardToList(card, 'list-done', listId);
     }
 
+    const [anchorEl, setAnchorEl] = useState(null);
+    const menuOpen = Boolean(anchorEl);
+    const handleClick = (event) => {
+      setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+      setAnchorEl(null);
+    };
+
+    const handleDoneBtn = () => {
+        handleClose();
+        handleMoveToDone();
+    }
+
+    const handleDelBtn = () => {
+        handleClose();
+        deleteCard(card.id, listId);
+    }
+
     return ( 
         <Draggable draggableId={card.id} index={index}>
             {(provided)=>(
@@ -119,19 +142,51 @@ function Card({card, index, isListActive, listWidth, listId}) {
                     ...provided.draggableProps.style,
                   }}>
                     <Paper ref={cardPaperRef} sx={{margin: 1}} elevation={4}>
+                        <div style={{display: 'flex'}}>
                         {open ? (
                             <InputBase 
                                 onChange={handleOnChange}
-                                autoFocus
+                                
                                 value={newTitle}
                                 sx={{
-                                    marginLeft: 1
+                                    margin: 1,
+                                    flex: 1,
+                                    maxHeight: '24px',
                                 }}
                                 variant='h5'
                                 onBlur={handleOnBlur}/>
                         ) : (
-                            <Typography sx={{margin: 1}} onClick={()=>setOpen(!open)} > {card.title} </Typography>
+                            <Typography sx={{margin: 1, flex: 1}} onClick={()=>setOpen(!open)} > {card.title} </Typography>
                         )}
+                            <Button
+                                id="demo-positioned-button"
+                                aria-controls={open ? 'demo-positioned-menu' : undefined}
+                                aria-haspopup="true"
+                                aria-expanded={open ? 'true' : undefined}
+                                onClick={handleClick}                                
+                            >
+                                <MoreHorizIcon color="black"/>
+                            </Button>
+                            <Menu
+                                id="demo-positioned-menu"
+                                aria-labelledby="demo-positioned-button"
+                                anchorEl={anchorEl}
+                                open={menuOpen}
+                                onClose={handleClose}
+                                anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                                }}
+                                transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'left',
+                                }}
+                                disableScrollLock={true} // IMPORTANT!!! If the scrollbar is disabled onOpen the DoneList is messed up
+                            >
+                                <MenuItem onClick={handleDoneBtn}><DoneIcon/></MenuItem>
+                                <MenuItem onClick={handleDelBtn}><DeleteIcon/></MenuItem>
+                            </Menu>
+                        </div>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <div  onBlur={handleOnTPBlur}>
                                 <TimePicker 
@@ -147,7 +202,6 @@ function Card({card, index, isListActive, listWidth, listId}) {
                                 />
                             </div>                  
                         </LocalizationProvider>
-                        <button onClick={handleMoveToDone}>move to done</button>
                     </Paper>
                 </div>
             )}

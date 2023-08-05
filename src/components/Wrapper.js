@@ -126,7 +126,20 @@ function Wrapper() {
     }
   }
 
-  /**
+  const deleteCard = (targetCardId, sourceListId) => {
+    const newSourceList = data.lists[sourceListId];
+    newSourceList.cards = data.lists[sourceListId].cards.filter(card => card.id !== targetCardId);
+
+    const newState = {
+      ...data,
+      lists:{
+        ...data.lists,
+        [sourceListId]: newSourceList,
+      },
+    };
+    setData(newState);
+  }
+  /** Moves Card to the bottom of target List
    * 
    * @param {card} targetCard The card to be moved
    * @param {list.id} destListId The destination list ID
@@ -136,7 +149,6 @@ function Wrapper() {
     // first delete card from its current list
     const newSourceList = data.lists[sourceListId];
     newSourceList.cards = data.lists[sourceListId].cards.filter(card => card.id !== targetCard.id);
-    console.log(newSourceList)
 
     const newState = {
       ...data,
@@ -164,7 +176,7 @@ function Wrapper() {
 
   
   return ( 
-    <StoreApi.Provider value={{addMoreCard, addMoreList, updateListTitle, moveCardToList}}>
+    <StoreApi.Provider value={{addMoreCard, addMoreList, updateListTitle, moveCardToList, deleteCard}}>
       <Button onClick={()=>{setDoneListOpen(!doneListOpen)}} fullWidth={true} variant='contained' color='info'>{doneListOpen ? 'Hide' : 'Show'} Done List</Button>
       <StyledDiv>
         
