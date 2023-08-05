@@ -5,10 +5,12 @@ import List from './List'
 import store from '../utils/store'
 import StoreApi from '../utils/storeApi';
 import { styled } from '@mui/system';
+import { Button, Slide } from '@mui/material';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { Style } from '@mui/icons-material';
 import DoneList from './DoneList';
 import * as tweenFunctions from "tween-functions";
+import { Constants } from '../constants';
 
 const StyledDiv = styled('div')({
   display: 'flex',
@@ -19,6 +21,7 @@ const StyledDiv = styled('div')({
 function Wrapper() {
 
   const [data, setData] = useState(store);
+  const [doneListOpen, setDoneListOpen] = useState(true);
 
   const addMoreCard = (title, listId, timeLeft) => {
     console.log("Adding new card with \ntitle: "+title+"\nlistId: "+listId+"\n");
@@ -106,8 +109,9 @@ function Wrapper() {
     }
     // else interlist dropping
     else {
-      //console.log('interlist dropping')
-      //console.log('type: '+type)
+      // set the latest non-DoneList list that the card was in
+      draggedCard.lastListId = destinationList.id;
+      console.log('draggedCard now has lastListId: '+draggedCard.lastListId);
       sourceList.cards.splice(source.index, 1);
       destinationList.cards.splice(destination.index, 0, draggedCard);
       const newState = {
@@ -122,82 +126,49 @@ function Wrapper() {
     }
   }
 
-  let api;
-  const useMyCoolSensor = value => {
-    api = value;
-  };
+  /**
+   * 
+   * @param {card} targetCard The card to be moved
+   * @param {list.id} destListId The destination list ID
+   * @param {list.id} sourceListId The source list ID
+   */
+  const moveCardToList = (targetCard, destListId, sourceListId) => {
+    // first delete card from its current list
+    const newSourceList = data.lists[sourceListId];
+    newSourceList.cards = data.lists[sourceListId].cards.filter(card => card.id !== targetCard.id);
+    console.log(newSourceList)
 
-  const useSnapSensor = value => {
-    api = value;
-  };
+    const newState = {
+      ...data,
+      lists:{
+        ...data.lists,
+        [sourceListId]: newSourceList,
+      },
+    };
+    setData(newState);
 
-  const snapToDone = function start() {
-    const preDrag = api.tryGetLock("card-1");
+    // then add it to the dest list
+    const list = data.lists[destListId];
+    list.cards = [...list.cards, targetCard];
 
-    if (!preDrag) {
-      return;
-    }
-    console.log('not returend')
-    const drag = preDrag.snapLift(start);
-
-    drag.moveRight();
-    drag.drop();
+    const newState2 = {
+      ...data,
+      lists:{
+        ...data.lists,
+        [destListId]: list,
+      },
+    };
+    setData(newState2);
+    
   }
 
-  const moveToDone = function start(cardProps, listProps) {
-    const preDrag = api.tryGetLock(cardProps.id);
-
-    if (!preDrag) {
-      return;
-    }
-
-    const endX = doneListRef.current.offsetLeft, endY = doneListRef.current.offsetTop;
-
-    // The offsets take into account the card's position, as well as any window scroll
-    const listIndex = data.listIds.indexOf(listProps.id);
-    console.log('list index for moveToDone: '+listIndex)
-    const offsetY = 2*cardProps.height+(cardProps.height*cardProps.index)-window.scrollY, offsetX = listProps.width*listIndex+(Math.max(
-      document.body.scrollWidth, document.documentElement.scrollWidth,
-      document.body.offsetWidth, document.documentElement.offsetWidth,
-      document.body.clientWidth, document.documentElement.clientWidth
-    )-document.body.clientWidth); 
-    const start = { x: 0, y: 0 }; 
-    const end = { x: endX-offsetX, y: endY-offsetY };
-    const drag = preDrag.fluidLift(start);
-
-    const points = [];
-
-    const numberOfPoints = 100;
-
-    for (let i = 0; i < numberOfPoints; i++) {
-      points.push({
-        x: tweenFunctions.easeOutSine(i, start.x, end.x, numberOfPoints),
-        y: tweenFunctions.easeOutSine(i, start.y, end.y, numberOfPoints)
-      });
-    }
-    moveStepByStep(drag, points);
-  }
-
-  function moveStepByStep(drag, values) {
-    requestAnimationFrame(() => {
-      const newPosition = values.shift();
-      console.log(`newX: ${newPosition.x}, newY: ${newPosition.y}`);
-      drag.move(newPosition);
   
-      if (values.length) {
-        moveStepByStep(drag, values);
-      } else {
-        //drag.drop();
-      }
-    });
-  }
-
-  const doneListRef = useRef(null);
-
   return ( 
-    <StoreApi.Provider value={{addMoreCard, addMoreList, updateListTitle, moveToDone}}>
+    <StoreApi.Provider value={{addMoreCard, addMoreList, updateListTitle, moveCardToList}}>
+      <Button onClick={()=>{setDoneListOpen(!doneListOpen)}} fullWidth={true} variant='contained' color='info'>{doneListOpen ? 'Hide' : 'Show'} Done List</Button>
       <StyledDiv>
-        <DragDropContext sensors={[useMyCoolSensor, useSnapSensor]} onDragEnd={onDragEnd}>
+        
+        <DragDropContext onDragEnd={onDragEnd}>
           <Droppable droppableId='app' type='list'>
             {(provided) => (
               <div ref={provided.innerRef} {...provided.droppableProps}>
@@ -208,9 +179,11 @@ function Wrapper() {
                     return <List list={list} key={listId}/>
                   })}
                   <InputContainer type="list"/> 
-                  <div style={{backgroundColor: 'none'}} className="bruh" ref={doneListRef}>
-                    <DoneList list={data.lists['list-done']} key='list-done'/>
-                  </div>
+                    <Slide direction="left" in={doneListOpen} mountOnEnter unmountOnExit>
+                      <div style={{position: 'fixed', right: 8}}>
+                        <DoneList list={data.lists['list-done']} key='list-done'/>
+                      </div>                
+                    </Slide>
                   {provided.placeholder}      
                 </StyledDiv>      
               </div>

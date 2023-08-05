@@ -9,7 +9,7 @@ import StoreApi from "../utils/storeApi";
 import { borderRadius } from "@mui/system";
 
 function Card({card, index, isListActive, listWidth, listId}) {
-    const {moveToDone} = useContext(StoreApi);
+    const {moveCardToList} = useContext(StoreApi);
     const [open, setOpen] = useState(false);
     const [newTitle, setNewTitle] = useState(card.title);
  
@@ -27,7 +27,9 @@ function Card({card, index, isListActive, listWidth, listId}) {
         pause,
         resume,
         restart,
-    } = useTimer({ expiryTimestamp, onExpire: () => console.warn('onExpire called')})
+    } = useTimer({ expiryTimestamp, onExpire: () => {
+        handleMoveToDone();
+    }})
  
     const [timeLeft, setTimeLeft] = useState(dayjs(`${minutes}:${seconds}`, 'mm-ss'));
     
@@ -103,20 +105,8 @@ function Card({card, index, isListActive, listWidth, listId}) {
     const padding = 1, marginBottom = 8, borderRadius = 2;
 
     const handleMoveToDone = () => { 
-        const cardHeight = cardPaperRef.current.clientHeight+marginBottom+(2*padding);
-
-        const cardProps = {
-            id: card.id,
-            index: index,
-            height: cardHeight,
-        }
-
-        const listProps = {
-            id: listId, 
-            width: listWidth,
-        }
-
-        moveToDone(cardProps, listProps);
+        card.timeLeft.seconds = 0; 
+        moveCardToList(card, 'list-done', listId);
     }
 
     return ( 
