@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { AppBar, Button, Toolbar, Typography } from '@mui/material';
+import { AppBar, Avatar, Button, Toolbar, Typography } from '@mui/material';
 import { auth, googleProvider } from '../config/firebase';
 import { onAuthStateChanged, signInWithPopup, signOut } from '@firebase/auth';
 
@@ -36,9 +36,14 @@ function TopBar() {
                     <Typography variant="h3" noWrap component="div" sx={{ flexGrow: 1 }}>
                         Timed Tasks
                     </Typography>
-                    <Button onClick={signInWIthGoogle} variant='contained' color='black'>Sign In</Button>
-                    <Button onClick={logout} variant='contained' color='black'>Sign Out</Button>
-                    <img src={user ? user.photoURL : ""} alt="profile-pic" />
+                    <Avatar src={user ? user.photoURL : ""} alt="profile-pic" />
+                    <Typography sx={{margin: 1}}>{user ? user.displayName : "Not Signed In"}</Typography>
+                    { user ? (
+                        <Button onClick={logout} variant='contained' color='black'>Logout</Button>
+                    ) : (
+                        <Button onClick={signInWIthGoogle} variant='contained' color='black'>Sign In</Button>
+                    )}
+
                 </Toolbar>
             </AppBar>
             <Toolbar/>
