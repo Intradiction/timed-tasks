@@ -10,7 +10,7 @@ import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { Style } from '@mui/icons-material';
 import DoneList from './DoneList';
 import * as tweenFunctions from "tween-functions";
-import { Constants } from '../constants';
+import { Constants } from '../config/constants';
 
 const StyledDiv = styled('div')({
   display: 'flex',

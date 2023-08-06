@@ -2,7 +2,7 @@ import { Paper, InputBase, Button, IconButton } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear"
 import { useContext, useState } from "react";
 import StoreApi from "../../utils/storeApi";
-import { Constants } from '../../constants';
+import { Constants } from '../../config/constants';
 
 function InputCard({setOpen, listId, type}) {
 

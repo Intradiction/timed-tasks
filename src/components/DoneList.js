@@ -4,7 +4,7 @@ import Title from './Title'
 import Card from './Card'
 import InputContainer from "./Input/InputContainer";
 import { Droppable } from "react-beautiful-dnd";
-import { Constants } from "../constants";
+import { Constants } from "../config/constants";
 
 function DoneList({list}) {
     const [isActive, setIsActive] = useState(false);
