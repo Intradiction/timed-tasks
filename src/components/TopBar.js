@@ -1,12 +1,17 @@
 import React from 'react'
-import { AppBar } from '@mui/material';
+import { AppBar, Toolbar, Typography } from '@mui/material';
 
 function TopBar() {
     return ( 
         <div>
-            <AppBar position='static' color="primary" elevation={0}>
-                <h1>What Are Doing</h1>
+            <AppBar>
+                <Toolbar>
+                    <Typography variant="h3" noWrap component="div" sx={{ flexGrow: 1 }}>
+                        Timed Tasks
+                    </Typography>
+                </Toolbar>
             </AppBar>
+            <Toolbar/>
         </div>
      );
 }

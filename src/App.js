@@ -38,7 +38,7 @@ function App() {
     <div style={{scrollBehavior: 'auto'}}>
       <ThemeProvider theme={theme}>
         <TopBar/>
-        <div style={{position: 'fixed'}}>
+        {/* <div style={{position: 'fixed'}}>
           The mouse is at position{' '}
           <b>
             ({mousePos.x}, {mousePos.y})[{window.scrollY}, {window.scrollX}]
@@ -48,7 +48,7 @@ function App() {
   document.body.offsetWidth, document.documentElement.offsetWidth,
   document.body.clientWidth, document.documentElement.clientWidth
 )}
-        </div>       
+        </div>        */}
         <Wrapper/>
       </ThemeProvider>
     </div>
