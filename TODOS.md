@@ -1,6 +1,7 @@
 # TODOS 
 - Integrate with Firebase
-- Update datastroe on logout
+- Update datastore on logout
+- Only allow one logged in instance per user
 - Add delete list functionality
 - Add Login screen
 - Reset card timeLeft to last manually set time when moved to doneList 
