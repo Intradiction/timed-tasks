@@ -1,5 +1,8 @@
 # TODOS 
 - Integrate with Firebase
+- Update datastroe on logout
+- Add delete list functionality
+- Add Login screen
 - Reset card timeLeft to last manually set time when moved to doneList 
 - Add doneList button that returns all cards in doneList to the list they were last in
 - Add transition for cards disappearing and appearing when programmatically moved

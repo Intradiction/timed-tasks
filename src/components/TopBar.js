@@ -2,31 +2,18 @@ import React, { useEffect, useState } from 'react'
 import { AppBar, Avatar, Button, Toolbar, Typography } from '@mui/material';
 import { auth, googleProvider } from '../config/firebase';
 import { onAuthStateChanged, signInWithPopup, signOut } from '@firebase/auth';
+import { useAuth } from '../utils/AuthContext';
 
 function TopBar() {
 
-    const [user, setUser] = useState({});
+    const { loginWithGoogle, logout, currentUser } = useAuth();
 
-    useEffect(() => {
-        onAuthStateChanged(auth, (currentUser) => {
-            setUser(currentUser);
-        })
-    }, []);
-
-    const signInWIthGoogle = async () => {
-        try {
-            await signInWithPopup(auth, googleProvider)
-        } catch (error) {
-            console.error(error);
-        }
+    const handleLoginBtn = async () => {
+        loginWithGoogle();
     }
 
-    const logout = async () => {
-        try {
-            await signOut(auth)
-        } catch (error) {
-            console.error(error);
-        }
+    const handleLogoutBtn = async () => {
+        logout();
     }
 
     return ( 
@@ -36,12 +23,12 @@ function TopBar() {
                     <Typography variant="h3" noWrap component="div" sx={{ flexGrow: 1 }}>
                         Timed Tasks
                     </Typography>
-                    <Avatar src={user ? user.photoURL : ""} alt="profile-pic" />
-                    <Typography sx={{margin: 1}}>{user ? user.displayName : "Not Signed In"}</Typography>
-                    { user ? (
-                        <Button onClick={logout} variant='contained' color='black'>Logout</Button>
+                    <Avatar src={currentUser ? currentUser.photoURL : ""} alt="profile-pic" />
+                    <Typography sx={{margin: 1}}>{currentUser ? currentUser.displayName : "Not Signed In"}</Typography>
+                    { currentUser ? (
+                        <Button onClick={handleLogoutBtn} variant='contained' color='black'>Logout</Button>
                     ) : (
-                        <Button onClick={signInWIthGoogle} variant='contained' color='black'>Sign In</Button>
+                        <Button onClick={handleLoginBtn} variant='contained' color='black'>Sign In</Button>
                     )}
 
                 </Toolbar>

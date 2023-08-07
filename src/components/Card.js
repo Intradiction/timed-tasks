@@ -12,7 +12,7 @@ import StoreApi from "../utils/storeApi";
 import { borderRadius, maxHeight } from "@mui/system";
 
 function Card({card, index, isListActive, listWidth, listId}) {
-    const {moveCardToList, deleteCard} = useContext(StoreApi);
+    const {moveCardToList, deleteCard, updateCardTimeLeft} = useContext(StoreApi);
     const [open, setOpen] = useState(false);
     const [newTitle, setNewTitle] = useState(card.title);
  
@@ -50,6 +50,8 @@ function Card({card, index, isListActive, listWidth, listId}) {
             minutes: minutes,
             seconds: seconds
         }
+        setTimeLeft(dayjs(`${minutes}:${seconds}`, 'mm-ss'));
+        //updateCardTimeLeft(card.id, listId, card.timeLeft);
     }, [seconds])
  
     // if index changes, pause all cards, then resume the new first card if list active
@@ -61,7 +63,7 @@ function Card({card, index, isListActive, listWidth, listId}) {
  
     // when parent list's isActive property changes
     useEffect(()=>{
-        //console.log('isActive changed')
+        console.log('isActive changed, card: '+card.id+' '+card.timeLeft.seconds)
         pause();
         resumeIfSlated();
     }, [isListActive])
@@ -76,10 +78,10 @@ function Card({card, index, isListActive, listWidth, listId}) {
     }
  
     const handleTPChange = (value) => {
-        const time = new Date();
-        time.setSeconds(time.getSeconds() + value.$s);
-        time.setMinutes(time.getMinutes() + value.$m);
-        restart(time, false);
+        const newTime = new Date();
+        newTime.setSeconds(newTime.getSeconds() + value.$s);
+        newTime.setMinutes(newTime.getMinutes() + value.$m);
+        restart(newTime, false);
         console.log('pausing')
     }
  
@@ -190,7 +192,7 @@ function Card({card, index, isListActive, listWidth, listId}) {
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <div  onBlur={handleOnTPBlur}>
                                 <TimePicker 
-                                    value={dayjs(`${minutes}:${seconds}`, 'mm-ss')} 
+                                    value={dayjs(`${card.timeLeft.minutes}:${card.timeLeft.seconds}`, 'mm-ss')} 
                                     views={['minutes', 'seconds']} 
                                     format="mm:ss"
                                     onSelectedSectionsChange={handleOnSSChange}
