@@ -1,5 +1,5 @@
 # TODOS 
-- Integrate with Firebase
+- ~~Integrate with Firebase~~
 - Update datastore on logout
 - Only allow one logged in instance per user
 - Add delete list functionality

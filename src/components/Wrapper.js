@@ -14,6 +14,7 @@ import { Constants } from '../config/constants';
 import { useAuth } from '../utils/AuthContext';
 import { db }  from '../config/firebase'
 import { doc, setDoc, onSnapshot, getDoc } from "firebase/firestore"; 
+import { useDatabase } from '../utils/DatabaseContext';
 
 
 const StyledDiv = styled('div')({
@@ -25,6 +26,7 @@ const StyledDiv = styled('div')({
 function Wrapper() {
 
   const {currentUser} = useAuth();
+  const {updateTasksDb, readTasksDb} = useDatabase();
 
   const [data, setData] = useState(store);
   const [loaded, setLoaded] = useState(false);
@@ -32,35 +34,28 @@ function Wrapper() {
 
   // load data from firestore again on currentUser Change
   useEffect(() => {
+    // if user not signed in
     if (!currentUser){
       setLoaded(true);
       return;
     }
     const getData = async () => {
-      console.log(currentUser);
-      const docRef = doc(db, "tasksCollection", currentUser.email);
-      const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
-        console.log("Document data:", docSnap.data());
-        updateTasksDB(docSnap.data());
-        setLoaded(true);
-      } else {
-        // doc.data() will be undefined in this case
-        console.log("No such document!");
+      const fetchedData = await readTasksDb(currentUser);
+      
+      // if data was successfully fetched, set it to that, otherwise keep the default data
+      if (fetchedData) {
+        console.log('data exists and was fetched from firestore')
+        setData(fetchedData);
       }
-    };
+    }
     getData();
+    setLoaded(true);
   }, [currentUser]);
 
-  async function updateTasksDB(data) {
+  async function updateTasksData(data) {
     setData(data);
-    try {
-      await setDoc(doc(db, "tasksCollection", currentUser.email), data); 
-    } catch (e) {
-      console.error("Error adding document: ", e);
-    }       
-}
+    updateTasksDb(data, currentUser);  
+  }
 
   const addMoreCard = (title, listId, timeLeft) => {
     console.log("Adding new card with \ntitle: "+title+"\nlistId: "+listId+"\n");
@@ -82,7 +77,7 @@ function Wrapper() {
         [listId]: list,
       },
     };
-    updateTasksDB(newState);
+    updateTasksData(newState);
   }
 
   const updateCardTimeLeft = (targetCardId, sourceListId, timeLeft) => {
@@ -96,7 +91,7 @@ function Wrapper() {
         ...newLists
       },
     };
-    updateTasksDB(newState);
+    updateTasksData(newState);
   }
 
   const deleteCard = (targetCardId, sourceListId) => {
@@ -110,7 +105,7 @@ function Wrapper() {
         [sourceListId]: newSourceList,
       },
     };
-    updateTasksDB(newState);
+    updateTasksData(newState);
   }
   /** Moves Card to the bottom of target List
    * 
@@ -130,7 +125,7 @@ function Wrapper() {
         [sourceListId]: newSourceList,
       },
     };
-    updateTasksDB(newState);
+    updateTasksData(newState);
 
     // then add it to the dest list
     const list = data.lists[destListId];
@@ -143,7 +138,7 @@ function Wrapper() {
         [destListId]: list,
       },
     };
-    updateTasksDB(newState2);
+    updateTasksData(newState2);
     
   }
 
@@ -162,7 +157,7 @@ function Wrapper() {
         [newListId]: newList
       }
     }
-    updateTasksDB(newState);
+    updateTasksData(newState);
   };
 
   const updateListTitle = (title, listId) => {
@@ -176,7 +171,7 @@ function Wrapper() {
         [listId]: list
       }
     }
-    updateTasksDB(newState);
+    updateTasksData(newState);
     console.log(`updating list with id = ${listId} to new title = ${title}`);
   }
 
@@ -205,7 +200,7 @@ function Wrapper() {
           [sourceList.id]: destinationList, 
         }
       }
-      updateTasksDB(newState);
+      updateTasksData(newState);
     }
     // else interlist dropping
     else {
@@ -222,7 +217,7 @@ function Wrapper() {
           [destinationList.id]: destinationList, 
         }
       }
-      updateTasksDB(newState);
+      updateTasksData(newState);
     }
   }
 
@@ -232,6 +227,7 @@ function Wrapper() {
       event.preventDefault();
 
       console.log('beforeunload event triggered');
+      console.log(data.lists['list-1'].cards[0].timeLeft);
       try {
         setDoc(doc(db, "tasksCollection", currentUser.email), data); 
       } catch (e) {

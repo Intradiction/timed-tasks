@@ -63,7 +63,6 @@ function Card({card, index, isListActive, listWidth, listId}) {
  
     // when parent list's isActive property changes
     useEffect(()=>{
-        console.log('isActive changed, card: '+card.id+' '+card.timeLeft.seconds)
         pause();
         resumeIfSlated();
     }, [isListActive])

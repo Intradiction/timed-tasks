@@ -4,6 +4,7 @@ import { createTheme, ThemeProvider  } from '@mui/material/styles';
 import Wrapper from './components/Wrapper'
 import TopBar from './components/TopBar';
 import { AuthProvider } from './utils/AuthContext';
+import { DatabaseProvider } from './utils/DatabaseContext';
 
 const theme = createTheme({
   palette: {
@@ -38,6 +39,7 @@ function App() {
   return ( 
     <div style={{scrollBehavior: 'auto'}}>
       <AuthProvider>
+      <DatabaseProvider>
         <ThemeProvider theme={theme}>
           <TopBar/>
           {/* <div style={{position: 'fixed'}}>
@@ -53,6 +55,8 @@ function App() {
           </div>        */}
           <Wrapper/>
         </ThemeProvider>
+      </DatabaseProvider>
+
       </AuthProvider>
     </div>
    );
