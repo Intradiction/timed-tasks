@@ -1,18 +1,31 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { AppBar, Avatar, Button, Toolbar, Typography } from '@mui/material';
-import { auth, googleProvider } from '../config/firebase';
-import { onAuthStateChanged, signInWithPopup, signOut } from '@firebase/auth';
 import { useAuth } from '../utils/AuthContext';
+import { useDatabase } from '../utils/DatabaseContext';
 
-function TopBar() {
+function TopBar({data, setData}) {
 
     const { loginWithGoogle, logout, currentUser } = useAuth();
+    const { updateTasksDb } = useDatabase(); 
 
     const handleLoginBtn = async () => {
         loginWithGoogle();
     }
 
     const handleLogoutBtn = async () => {
+        console.log(data.lists['list-1'].cards[0].timeLeft);
+        await updateTasksDb(data, currentUser);
+        // set to blank after logging out
+        setData({
+            lists: {
+                'list-done': {
+                    id: 'list-done',
+                    title: 'Done',
+                    cards: []
+                },        
+            },
+            listIds: ['list-done'],
+        })
         logout();
     }
 

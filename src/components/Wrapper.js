@@ -23,12 +23,12 @@ const StyledDiv = styled('div')({
   background: '#32a852',
 });
 
-function Wrapper() {
+function Wrapper({data, setData}) {
 
   const {currentUser} = useAuth();
   const {updateTasksDb, readTasksDb} = useDatabase();
 
-  const [data, setData] = useState(store);
+
   const [loaded, setLoaded] = useState(false);
   const [doneListOpen, setDoneListOpen] = useState(true);
 
@@ -52,9 +52,15 @@ function Wrapper() {
     setLoaded(true);
   }, [currentUser]);
 
-  async function updateTasksData(data) {
-    setData(data);
-    updateTasksDb(data, currentUser);  
+  async function updateTasksData(newdata) {
+    setData(newdata);
+    await updateTasksDb(newdata, currentUser);  
+  }
+
+  // updates db with current data
+  async function updateDb() {
+    console.log(JSON.stringify(data.lists['list-1'].cards[0].timeLeft));
+    await updateTasksDb(data, currentUser);
   }
 
   const addMoreCard = (title, listId, timeLeft) => {
@@ -221,15 +227,15 @@ function Wrapper() {
     }
   }
 
-  // save data to firestore on tab refresh or close
+  // save data to firestore on tab refresh or close, doesn't always work tho
   useEffect(() => {
-    const handleTabClose = event => {
+    const handleTabClose = async event => {
       event.preventDefault();
 
       console.log('beforeunload event triggered');
       console.log(data.lists['list-1'].cards[0].timeLeft);
       try {
-        setDoc(doc(db, "tasksCollection", currentUser.email), data); 
+        await setDoc(doc(db, "tasksCollection", currentUser.email), data); 
       } catch (e) {
         console.error("Error adding document: ", e);
       }      
@@ -242,12 +248,22 @@ function Wrapper() {
     };
   });
 
+  const value = {
+    addMoreCard, 
+    addMoreList, 
+    updateListTitle, 
+    moveCardToList,
+    deleteCard, 
+    updateCardTimeLeft,
+    updateDb,
+  }
+
   return ( 
-    <StoreApi.Provider value={{addMoreCard, addMoreList, updateListTitle, moveCardToList, deleteCard, updateCardTimeLeft}}>
+    <StoreApi.Provider value={value}>
       {loaded ? (
         <div>
           <Button onClick={()=>{setDoneListOpen(!doneListOpen)}} fullWidth={true} variant='contained' color='info'>{doneListOpen ? 'Hide' : 'Show'} Done List</Button>
-          <StyledDiv>     
+
             <DragDropContext onDragEnd={onDragEnd}>
               <Droppable droppableId='app' type='list'>
                 {(provided) => (
@@ -256,21 +272,21 @@ function Wrapper() {
                       {/* <button onClick={snapToDone}>snap</button> */}
                       {data.listIds.filter(listId => listId !== 'list-done').map((listId)=>{
                         const list = data.lists[listId];
-                        return <List list={list} key={listId}/>
+                        return <List list={list} key={listId} data={data}/>
                       })}
                       <InputContainer type="list"/> 
-                        <Slide direction="left" in={doneListOpen} mountOnEnter unmountOnExit>
-                          <div style={{position: 'fixed', right: 8}}>
-                            <DoneList list={data.lists['list-done']} key='list-done'/>
-                          </div>                
-                        </Slide>
+                      <Slide direction="left" in={doneListOpen} mountOnEnter unmountOnExit>
+                        <div style={{position: 'fixed', right: 8}}>
+                        <DoneList list={data.lists['list-done']} key='list-done'/>
+                        </div>                
+                      </Slide>
                       {provided.placeholder}      
                     </StyledDiv>      
                   </div>
                 )}
               </Droppable>
             </DragDropContext>
-          </StyledDiv>
+
         </div>
       ) : (
         <Backdrop

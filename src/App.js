@@ -1,10 +1,11 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
 import { createTheme, ThemeProvider  } from '@mui/material/styles';
-import Wrapper from './components/Wrapper'
-import TopBar from './components/TopBar';
 import { AuthProvider } from './utils/AuthContext';
 import { DatabaseProvider } from './utils/DatabaseContext';
+import store from './utils/store';
+import Wrapper from './components/Wrapper'
+import TopBar from './components/TopBar';
 
 const theme = createTheme({
   palette: {
@@ -18,7 +19,8 @@ const theme = createTheme({
 });
 
 function App() {
-
+  
+  const [data, setData] = useState(store);
   const [mousePos, setMousePos] = useState({});
 
   useEffect(() => {
@@ -37,11 +39,10 @@ function App() {
   }, []);
 
   return ( 
-    <div style={{scrollBehavior: 'auto'}}>
       <AuthProvider>
       <DatabaseProvider>
         <ThemeProvider theme={theme}>
-          <TopBar/>
+          <TopBar data={data} setData={setData}/>
           {/* <div style={{position: 'fixed'}}>
             The mouse is at position{' '}
             <b>
@@ -53,12 +54,10 @@ function App() {
     document.body.clientWidth, document.documentElement.clientWidth
   )}
           </div>        */}
-          <Wrapper/>
+          <Wrapper data={data} setData={setData}/>
         </ThemeProvider>
       </DatabaseProvider>
-
       </AuthProvider>
-    </div>
    );
 }
 

@@ -9,7 +9,6 @@ import { TimePicker, LocalizationProvider} from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import StoreApi from "../utils/storeApi";
-import { borderRadius, maxHeight } from "@mui/system";
 
 function Card({card, index, isListActive, listWidth, listId}) {
     const {moveCardToList, deleteCard, updateCardTimeLeft} = useContext(StoreApi);
@@ -17,6 +16,7 @@ function Card({card, index, isListActive, listWidth, listId}) {
     const [newTitle, setNewTitle] = useState(card.title);
  
     const time = new Date();
+    //console.log('timeLeft from within card'+JSON.stringify(card.timeLeft));
     time.setSeconds(time.getSeconds() + card.timeLeft.seconds);
     time.setMinutes(time.getMinutes() + card.timeLeft.minutes);
     let expiryTimestamp = time;
