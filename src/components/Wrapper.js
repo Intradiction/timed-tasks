@@ -28,7 +28,6 @@ function Wrapper({data, setData}) {
   const {currentUser} = useAuth();
   const {updateTasksDb, readTasksDb} = useDatabase();
 
-
   const [loaded, setLoaded] = useState(false);
   const [doneListOpen, setDoneListOpen] = useState(true);
 
@@ -59,7 +58,6 @@ function Wrapper({data, setData}) {
 
   // updates db with current data
   async function updateDb() {
-    console.log(JSON.stringify(data.lists['list-1'].cards[0].timeLeft));
     await updateTasksDb(data, currentUser);
   }
 
@@ -233,7 +231,6 @@ function Wrapper({data, setData}) {
       event.preventDefault();
 
       console.log('beforeunload event triggered');
-      console.log(data.lists['list-1'].cards[0].timeLeft);
       try {
         await setDoc(doc(db, "tasksCollection", currentUser.email), data); 
       } catch (e) {

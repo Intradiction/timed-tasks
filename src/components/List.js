@@ -39,7 +39,14 @@ function List({list}) {
                     {(provided)=>(
                         <div ref={provided.innerRef} {...provided.droppableProps}>
                             {list.cards.map((card, index) => (
-                                <Card key={card.id} card={card} index={index} isListActive={isActive} listWidth={listWidthWeb} listId={list.id}/>
+                                <Card 
+                                    key={card.id} 
+                                    card={card} 
+                                    index={index} 
+                                    isListActive={isActive} 
+                                    listWidth={listWidthWeb} 
+                                    listId={list.id}
+                                    updateDb={updateDb}/>
                             ))}
                             {provided.placeholder}
                         </div>

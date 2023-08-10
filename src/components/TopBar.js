@@ -13,7 +13,6 @@ function TopBar({data, setData}) {
     }
 
     const handleLogoutBtn = async () => {
-        console.log(data.lists['list-1'].cards[0].timeLeft);
         await updateTasksDb(data, currentUser);
         // set to blank after logging out
         setData({

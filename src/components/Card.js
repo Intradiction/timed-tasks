@@ -10,7 +10,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import StoreApi from "../utils/storeApi";
 
-function Card({card, index, isListActive, listWidth, listId}) {
+function Card({card, index, isListActive, listId, updateDb}) {
     const {moveCardToList, deleteCard, updateCardTimeLeft} = useContext(StoreApi);
     const [open, setOpen] = useState(false);
     const [newTitle, setNewTitle] = useState(card.title);
@@ -44,6 +44,12 @@ function Card({card, index, isListActive, listWidth, listId}) {
             //console.log('resumed')
         }        
     }
+
+    // any pause should trigger a write to firestore 
+    const pauseAndUpdateDb = () => {
+        pause();
+        updateDb();
+    }
  
     useEffect(()=>{
         card.timeLeft = {
@@ -54,6 +60,7 @@ function Card({card, index, isListActive, listWidth, listId}) {
         //updateCardTimeLeft(card.id, listId, card.timeLeft);
     }, [seconds])
  
+    // NOTE: The below functions are triggered by events that already update the firestore, so it is not neccessary to do o again
     // if index changes, pause all cards, then resume the new first card if list active
     useEffect(()=>{
         //console.log('index changed');
@@ -99,7 +106,7 @@ function Card({card, index, isListActive, listWidth, listId}) {
  
     const handleOnSSChange = (value) => {
         if (value !== null){
-            pause();
+            pauseAndUpdateDb();
         } else {
             resumeIfSlated();
         }
