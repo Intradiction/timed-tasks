@@ -89,6 +89,7 @@ function Card({card, index, isListActive, listId, updateDb}) {
  
     const handleOnAccept = () => {
         console.log('accepted')
+        updateDb();
         resumeIfSlated();
     }
  
