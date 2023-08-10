@@ -1,5 +1,5 @@
 import React from 'react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { createTheme, ThemeProvider  } from '@mui/material/styles';
 import { AuthProvider } from './utils/AuthContext';
 import { DatabaseProvider } from './utils/DatabaseContext';
@@ -21,22 +21,22 @@ const theme = createTheme({
 function App() {
   
   const [data, setData] = useState(store);
-  const [mousePos, setMousePos] = useState({});
+  //const [mousePos, setMousePos] = useState({});
 
-  useEffect(() => {
-    const handleMouseMove = (event) => {
-      setMousePos({ x: event.clientX, y: event.clientY });
-    };
+  // useEffect(() => {
+  //   const handleMouseMove = (event) => {
+  //     setMousePos({ x: event.clientX, y: event.clientY });
+  //   };
   
-    window.addEventListener('mousemove', handleMouseMove);
+  //   window.addEventListener('mousemove', handleMouseMove);
   
-    return () => {
-      window.removeEventListener(
-        'mousemove',
-        handleMouseMove
-      );
-    };
-  }, []);
+  //   return () => {
+  //     window.removeEventListener(
+  //       'mousemove',
+  //       handleMouseMove
+  //     );
+  //   };
+  // }, []);
 
   return ( 
       <AuthProvider>

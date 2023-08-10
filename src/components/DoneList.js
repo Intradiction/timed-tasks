@@ -1,13 +1,11 @@
-import React, { useState } from "react";
-import { Paper, CssBaseline, Button } from "@mui/material";
+import React from "react";
+import { Paper, CssBaseline } from "@mui/material";
 import Title from './Title'
 import Card from './Card'
-import InputContainer from "./Input/InputContainer";
 import { Droppable } from "react-beautiful-dnd";
 import { Constants } from "../config/constants";
 
 function DoneList({list}) {
-    const [isActive, setIsActive] = useState(false);
     return ( 
         <div>
             <Paper 
@@ -23,7 +21,7 @@ function DoneList({list}) {
                     {(provided)=>(
                         <div ref={provided.innerRef} {...provided.droppableProps}>
                             {list.cards.map((card, index) => (
-                                <Card key={card.id} card={card} index={index} isListActive={isActive} listId={list.id}/>
+                                <Card key={card.id} card={card} index={index} isListActive={false} listId={list.id}/>
                             ))}
                             {provided.placeholder}
                         </div>

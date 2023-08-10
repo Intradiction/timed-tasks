@@ -1,21 +1,16 @@
-import { useState, useRef, useEffect } from 'react'
-import { v4 as uuid } from 'uuid'
-import InputContainer from '../components/Input/InputContainer';
-import List from './List'
-import store from '../utils/store'
-import StoreApi from '../utils/storeApi';
+import { useState, useEffect } from 'react'
 import { styled } from '@mui/system';
 import { Backdrop, Button, CircularProgress, Slide } from '@mui/material';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
-import { Style } from '@mui/icons-material';
-import DoneList from './DoneList';
-import * as tweenFunctions from "tween-functions";
-import { Constants } from '../config/constants';
-import { useAuth } from '../utils/AuthContext';
+import { v4 as uuid } from 'uuid'
 import { db }  from '../config/firebase'
-import { doc, setDoc, onSnapshot, getDoc } from "firebase/firestore"; 
+import { doc, setDoc } from "firebase/firestore"; 
+import { useAuth } from '../utils/AuthContext';
 import { useDatabase } from '../utils/DatabaseContext';
-
+import StoreApi from '../utils/storeApi';
+import DoneList from './DoneList';
+import List from './List'
+import InputContainer from '../components/Input/InputContainer';
 
 const StyledDiv = styled('div')({
   display: 'flex',
@@ -86,7 +81,7 @@ function Wrapper({data, setData}) {
 
   const updateCardTimeLeft = (targetCardId, sourceListId, timeLeft) => {
     const newLists = data.lists;
-    const targetCard = newLists[sourceListId].cards.find(card => card.id == targetCardId);
+    const targetCard = newLists[sourceListId].cards.find(card => card.id === targetCardId);
     targetCard.timeLeft = timeLeft;
 
     const newState = {
@@ -181,9 +176,6 @@ function Wrapper({data, setData}) {
 
   const onDragEnd = (result) => {
     const {destination, source, draggableId, type} = result;
-    //console.log('draggableID:'+draggableId)
-    //console.log('destination:', destination, '\nsource:', source, '\ndraggableId', draggableId)
-
     const sourceList = data.lists[source.droppableId];
     const destinationList = data.lists[destination.droppableId];
     const draggedCard = sourceList.cards.filter((card) => card.id === draggableId)[0];
@@ -194,7 +186,6 @@ function Wrapper({data, setData}) {
     } 
     // else if intralist dropping
     else if (source.droppableId === destination.droppableId) {
-      //console.log('intralist dropping');
       sourceList.cards.splice(source.index, 1);
       destinationList.cards.splice(destination.index, 0, draggedCard);
       const newState = {

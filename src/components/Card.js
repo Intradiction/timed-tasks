@@ -11,12 +11,11 @@ import dayjs from 'dayjs';
 import StoreApi from "../utils/storeApi";
 
 function Card({card, index, isListActive, listId, updateDb}) {
-    const {moveCardToList, deleteCard, updateCardTimeLeft} = useContext(StoreApi);
+    const {moveCardToList, deleteCard} = useContext(StoreApi);
     const [open, setOpen] = useState(false);
     const [newTitle, setNewTitle] = useState(card.title);
  
     const time = new Date();
-    //console.log('timeLeft from within card'+JSON.stringify(card.timeLeft));
     time.setSeconds(time.getSeconds() + card.timeLeft.seconds);
     time.setMinutes(time.getMinutes() + card.timeLeft.minutes);
     let expiryTimestamp = time;
@@ -39,9 +38,7 @@ function Card({card, index, isListActive, listId, updateDb}) {
     // resume if this card is first in list AND the list is active
     const resumeIfSlated = () => {
         if(index === 0 && isListActive){
-
             resume();
-            //console.log('resumed')
         }        
     }
 
@@ -63,7 +60,6 @@ function Card({card, index, isListActive, listId, updateDb}) {
     // NOTE: The below functions are triggered by events that already update the firestore, so it is not neccessary to do o again
     // if index changes, pause all cards, then resume the new first card if list active
     useEffect(()=>{
-        //console.log('index changed');
         pause();
         resumeIfSlated();
     }, [index])
