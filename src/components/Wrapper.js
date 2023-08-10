@@ -44,6 +44,7 @@ function Wrapper({data, setData}) {
     }
     getData();
     setLoaded(true);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser]);
 
   async function updateTasksData(newdata) {

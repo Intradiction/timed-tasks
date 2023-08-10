@@ -22,10 +22,10 @@ function Card({card, index, isListActive, listId, updateDb}) {
     const {
         seconds,
         minutes,
-        hours,
-        days,
-        isRunning,
-        start,
+        // hours,
+        // days,
+        // isRunning,
+        // start,
         pause,
         resume,
         restart,
@@ -33,7 +33,6 @@ function Card({card, index, isListActive, listId, updateDb}) {
         handleMoveToDone();
     }})
  
-    const [timeLeft, setTimeLeft] = useState(dayjs(`${minutes}:${seconds}`, 'mm-ss'));
     
     // resume if this card is first in list AND the list is active
     const resumeIfSlated = () => {
@@ -53,8 +52,7 @@ function Card({card, index, isListActive, listId, updateDb}) {
             minutes: minutes,
             seconds: seconds
         }
-        setTimeLeft(dayjs(`${minutes}:${seconds}`, 'mm-ss'));
-        //updateCardTimeLeft(card.id, listId, card.timeLeft);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [seconds])
  
     // NOTE: The below functions are triggered by events that already update the firestore, so it is not neccessary to do o again
@@ -62,12 +60,14 @@ function Card({card, index, isListActive, listId, updateDb}) {
     useEffect(()=>{
         pause();
         resumeIfSlated();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [index])
  
     // when parent list's isActive property changes
     useEffect(()=>{
         pause();
         resumeIfSlated();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isListActive])
  
     const handleOnChange = (e) => {
@@ -195,7 +195,7 @@ function Card({card, index, isListActive, listId, updateDb}) {
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <div  onBlur={handleOnTPBlur}>
                                 <TimePicker 
-                                    value={dayjs(`${card.timeLeft.minutes}:${card.timeLeft.seconds}`, 'mm-ss')} 
+                                    value={dayjs(`${minutes}:${seconds}`, 'mm-ss')} 
                                     views={['minutes', 'seconds']} 
                                     format="mm:ss"
                                     onSelectedSectionsChange={handleOnSSChange}
