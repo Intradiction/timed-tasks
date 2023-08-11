@@ -1,13 +1,22 @@
-import { InputBase, Typography } from "@mui/material";
+
 import { useState, useContext } from "react";
+import { InputBase, Typography, Menu, MenuItem, Button } from "@mui/material";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz"
+import DeleteIcon from '@mui/icons-material/Delete';
 import storeApi from "../utils/storeApi";
 
 function Title({title, listId}) {
 
     const [open, setOpen] = useState(false);
     const [newTitle, setNewTitle] = useState('');
-    const {updateListTitle} = useContext(storeApi);
+    const {updateListTitle, deleteList} = useContext(storeApi);
+
+    const isNotDoneList = listId === 'list-done' ? false : true;
+    const handleOnClick = () => {
+        if (isNotDoneList) {
+            setOpen(!open);
+        }
+    }
 
     const handleOnChange = (e) => {
         setNewTitle(e.target.value);
@@ -17,6 +26,20 @@ function Title({title, listId}) {
         updateListTitle(newTitle, listId);
         setOpen(false);
     }
+
+    const handleDelBtn = () => {
+        deleteList(listId);
+    }
+
+    const [anchorEl, setAnchorEl] = useState(null);
+    const menuOpen = Boolean(anchorEl);
+    const handleClick = (event) => {
+      setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+      setAnchorEl(null);
+    };
 
     return (  
         <div>
@@ -36,13 +59,41 @@ function Title({title, listId}) {
             ) : (
                 <div style={{ display: 'flex' }}>                 
                     <Typography 
-                        onClick={()=>setOpen(!open)} 
+                        onClick={handleOnClick} 
                         sx={{marginLeft: 1, flexGrow: 1, fontWeight: 'bold'}}
                         variant='h5'
                     >
                         {title}
                     </Typography>
-                    <MoreHorizIcon/>
+                
+                { isNotDoneList && <Button
+                    id="demo-positioned-button"
+                    aria-controls={menuOpen ? 'demo-positioned-menu' : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={menuOpen ? 'true' : undefined}
+                    onClick={handleClick}                                
+                >
+                    <MoreHorizIcon color="black"/>
+                </Button> }
+                
+                <Menu
+                    id="demo-positioned-menu"
+                    aria-labelledby="demo-positioned-button"
+                    anchorEl={anchorEl}
+                    open={menuOpen}
+                    onClose={handleClose}
+                    anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                    }}
+                    transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                    }}
+                    disableScrollLock={true} // IMPORTANT!!! If the scrollbar is disabled onOpen the DoneList is messed up
+                >
+                    <MenuItem onClick={handleDelBtn}><DeleteIcon/></MenuItem>
+                </Menu>
                 </div>
             )}
         </div> 

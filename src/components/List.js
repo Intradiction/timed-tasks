@@ -1,11 +1,11 @@
 import React, { useState, useContext } from "react";
-import { Paper, CssBaseline, Button } from "@mui/material";
-import Title from './Title'
-import Card from './Card'
-import InputContainer from "./Input/InputContainer";
 import { Droppable } from "react-beautiful-dnd";
+import { Paper, CssBaseline, Button } from "@mui/material";
+import InputContainer from "./Input/InputContainer";
 import { Constants } from '../config/constants';
 import storeApi from "../utils/storeApi";
+import Title from './Title'
+import Card from './Card'
 
 function List({list}) {
     const {updateDb} = useContext(storeApi);

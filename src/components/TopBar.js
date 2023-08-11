@@ -47,7 +47,7 @@ function TopBar({data, setData}) {
             </AppBar>
             <Toolbar/>
         </div>
-     );
+    );
 }
 
 export default TopBar;

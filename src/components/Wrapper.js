@@ -107,6 +107,19 @@ function Wrapper({data, setData}) {
     };
     updateTasksData(newState);
   }
+
+  const deleteList = (listId) => {
+    const newDataLists = data.lists;
+    delete newDataLists[listId];
+
+    const newState = {
+      listIds: data.listIds.filter(id => id !== listId),
+      lists:{
+        ...newDataLists,
+      },
+    };
+    updateTasksData(newState);
+  }
   /** Moves Card to the bottom of target List
    * 
    * @param {card} targetCard The card to be moved
@@ -243,6 +256,7 @@ function Wrapper({data, setData}) {
     updateListTitle, 
     moveCardToList,
     deleteCard, 
+    deleteList, 
     updateCardTimeLeft,
     updateDb,
   }
@@ -258,7 +272,7 @@ function Wrapper({data, setData}) {
                 {(provided) => (
                   <div ref={provided.innerRef} {...provided.droppableProps}>
                     <StyledDiv>
-                      {/* <button onClick={snapToDone}>snap</button> */}
+
                       {data.listIds.filter(listId => listId !== 'list-done').map((listId)=>{
                         const list = data.lists[listId];
                         return <List list={list} key={listId} data={data}/>
