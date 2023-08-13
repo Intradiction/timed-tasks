@@ -84,17 +84,20 @@ function Card({card, index, isListActive, listId, updateDb}) {
         newTime.setSeconds(newTime.getSeconds() + value.$s);
         newTime.setMinutes(newTime.getMinutes() + value.$m);
         restart(newTime, false);
+        card.lastTimeSet = card.timeLeft;
         console.log('pausing')
     }
  
     const handleOnAccept = () => {
         console.log('accepted')
+        card.lastTimeSet = card.timeLeft;
         updateDb();
         resumeIfSlated();
     }
  
     const handleOnTPBlur = (event) => {
-        console.log(event);
+        //console.log(event);
+        card.lastTimeSet = card.timeLeft;
         if (event.relatedTarget === null) {
             //console.log('outside was actually clicked');
             resumeIfSlated();
@@ -114,6 +117,7 @@ function Card({card, index, isListActive, listId, updateDb}) {
 
     const handleMoveToDone = () => { 
         card.timeLeft.seconds = 0; 
+        card.timeLeft.minutes = 0; 
         moveCardToList(card, 'list-done', listId);
     }
 

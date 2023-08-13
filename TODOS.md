@@ -2,10 +2,10 @@
 - ~~Integrate with Firebase~~
 - ~~Update datastore on logout, start/pause, ~~
 - Only allow one logged in instance per user
-- Add delete list functionality
+- ~~Add delete list functionality~~
 - Add Login screen
-- Reset card timeLeft to last manually set time when moved to doneList 
-- Add doneList button that returns all cards in doneList to the list they were last in
+- ~~Reset card timeLeft to last manually set time when moved to doneList~~ 
+- ~~Add doneList button that returns all cards in doneList to the list they were last in~~
 - Add transition for cards disappearing and appearing when programmatically moved
 - Highlight inputs when hovered, highlight card background elevation when hovered
 - Style cards better

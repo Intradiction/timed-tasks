@@ -1,11 +1,21 @@
-import React from "react";
-import { Paper, CssBaseline } from "@mui/material";
+import React, { useContext } from "react";
+import { Paper, CssBaseline, Button } from "@mui/material";
+import { Droppable } from "react-beautiful-dnd";
 import Title from './Title'
 import Card from './Card'
-import { Droppable } from "react-beautiful-dnd";
+import storeApi from "../utils/storeApi";
 import { Constants } from "../config/constants";
 
 function DoneList({list}) {
+    const {moveCardToList} = useContext(storeApi);
+
+    const handleReturnBtn = () => {
+        for (let card of list.cards) {
+            card.timeLeft = card.lastTimeSet;
+            moveCardToList(card, card.lastListId, list.id);
+        }
+    }
+
     return ( 
         <div>
             <Paper 
@@ -17,6 +27,7 @@ function DoneList({list}) {
                 }}>
                 <CssBaseline/>
                 <Title title={list.title} listId={list.id}/>
+                <Button variant="contained" sx={{margin: 1}} onClick={handleReturnBtn}>Return Cards</Button>
                 <Droppable droppableId={list.id}>
                     {(provided)=>(
                         <div ref={provided.innerRef} {...provided.droppableProps}>

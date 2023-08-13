@@ -1,4 +1,5 @@
 // Currently this is just the example data for a non logged in user
+// ⚠⚠⚠ This is old data and may be missing new properties that have been added
 // const cards = [
 //     {
 //         id: 'card-1',

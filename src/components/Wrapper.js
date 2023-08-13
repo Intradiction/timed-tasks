@@ -65,6 +65,8 @@ function Wrapper({data, setData}) {
       id: newCardId,
       title,
       timeLeft: timeLeft,
+      lastTimeSet: timeLeft,
+      lastListId: listId,
     };
 
     const list = data.lists[listId];
@@ -214,7 +216,9 @@ function Wrapper({data, setData}) {
     // else interlist dropping
     else {
       // set the latest non-DoneList list that the card was in
-      draggedCard.lastListId = destinationList.id;
+      if(destinationList.id !== 'list-done') {
+        draggedCard.lastListId = destinationList.id;
+      }
       console.log('draggedCard now has lastListId: '+draggedCard.lastListId);
       sourceList.cards.splice(source.index, 1);
       destinationList.cards.splice(destination.index, 0, draggedCard);
@@ -266,30 +270,28 @@ function Wrapper({data, setData}) {
       {loaded ? (
         <div>
           <Button onClick={()=>{setDoneListOpen(!doneListOpen)}} fullWidth={true} variant='contained' color='info'>{doneListOpen ? 'Hide' : 'Show'} Done List</Button>
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId='app' type='list'>
+              {(provided) => (
+                <div ref={provided.innerRef} {...provided.droppableProps}>
+                  <StyledDiv>
 
-            <DragDropContext onDragEnd={onDragEnd}>
-              <Droppable droppableId='app' type='list'>
-                {(provided) => (
-                  <div ref={provided.innerRef} {...provided.droppableProps}>
-                    <StyledDiv>
-
-                      {data.listIds.filter(listId => listId !== 'list-done').map((listId)=>{
-                        const list = data.lists[listId];
-                        return <List list={list} key={listId} data={data}/>
-                      })}
-                      <InputContainer type="list"/> 
-                      <Slide direction="left" in={doneListOpen} mountOnEnter unmountOnExit>
-                        <div style={{position: 'fixed', right: 8}}>
-                        <DoneList list={data.lists['list-done']} key='list-done'/>
-                        </div>                
-                      </Slide>
-                      {provided.placeholder}      
-                    </StyledDiv>      
-                  </div>
-                )}
-              </Droppable>
-            </DragDropContext>
-
+                    {data.listIds.filter(listId => listId !== 'list-done').map((listId)=>{
+                      const list = data.lists[listId];
+                      return <List list={list} key={listId} data={data}/>
+                    })}
+                    <InputContainer type="list"/> 
+                    <Slide direction="left" in={doneListOpen} mountOnEnter unmountOnExit>
+                      <div style={{position: 'fixed', right: 8}}>
+                      <DoneList list={data.lists['list-done']} key='list-done'/>
+                      </div>                
+                    </Slide>
+                    {provided.placeholder}      
+                  </StyledDiv>      
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
         </div>
       ) : (
         <Backdrop
