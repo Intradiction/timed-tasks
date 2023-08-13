@@ -8,7 +8,7 @@ import storeApi from "../utils/storeApi";
 function Title({title, listId}) {
 
     const [open, setOpen] = useState(false);
-    const [newTitle, setNewTitle] = useState('');
+    const [newTitle, setNewTitle] = useState(title);
     const {updateListTitle, deleteList} = useContext(storeApi);
 
     const isNotDoneList = listId === 'list-done' ? false : true;
@@ -47,20 +47,18 @@ function Title({title, listId}) {
                 <div>
                     <InputBase 
                         onChange={handleOnChange}
-                        autoFocus
                         value={newTitle}
-                        sx={{
-                            marginLeft: 1
-                        }}
-                        variant='h5'
+                        sx={{marginLeft: 1, marginTop: '4px', marginBottom: '4px', flexGrow: 1, fontWeight: 'bold', fontSize: '23.28px'}}
+                        spellcheck="false"
                         onBlur={handleOnBlur}
+                        autoFocus
                     />
                 </div>  
             ) : (
                 <div style={{ display: 'flex' }}>                 
                     <Typography 
                         onClick={handleOnClick} 
-                        sx={{marginLeft: 1, flexGrow: 1, fontWeight: 'bold'}}
+                        sx={{marginLeft: 1, marginTop: 1, flexGrow: 1, fontWeight: 'bold', height: '42.58px', outline: `0 solid transparent`}}
                         variant='h5'
                     >
                         {title}
