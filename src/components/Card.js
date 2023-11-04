@@ -9,6 +9,7 @@ import { TimePicker, LocalizationProvider} from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import StoreApi from "../utils/storeApi";
+import magicGlitterArrivalSound from '../assets/magicGlitterArrivalSound.mp3'
 
 function Card({card, index, isListActive, listId, updateDb}) {
     const {moveCardToList, deleteCard} = useContext(StoreApi);
@@ -31,6 +32,7 @@ function Card({card, index, isListActive, listId, updateDb}) {
         restart,
     } = useTimer({ expiryTimestamp, onExpire: () => {
         handleMoveToDone();
+        new Audio(magicGlitterArrivalSound).play()
     }})
  
     

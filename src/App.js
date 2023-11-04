@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { createTheme, ThemeProvider  } from '@mui/material/styles';
 import { AuthProvider } from './utils/AuthContext';
@@ -21,22 +21,29 @@ const theme = createTheme({
 function App() {
   
   const [data, setData] = useState(store);
-  //const [mousePos, setMousePos] = useState({});
 
-  // useEffect(() => {
-  //   const handleMouseMove = (event) => {
-  //     setMousePos({ x: event.clientX, y: event.clientY });
-  //   };
-  
-  //   window.addEventListener('mousemove', handleMouseMove);
-  
-  //   return () => {
-  //     window.removeEventListener(
-  //       'mousemove',
-  //       handleMouseMove
-  //     );
-  //   };
-  // }, []);
+  // User has switched back to the tab
+  const onFocus = () => {
+    console.log("Tab is in focus");
+  };
+
+  // User has switched away from the tab (AKA tab is hidden)
+  const onBlur = () => {
+    console.log("Tab is blurred");
+  };
+
+    useEffect(() => {
+        window.addEventListener("focus", onFocus);
+        window.addEventListener("blur", onBlur);
+        // Calls onFocus when the window first loads
+        onFocus();
+        // Specify how to clean up after this effect:
+        return () => {
+            window.removeEventListener("focus", onFocus);
+            window.removeEventListener("blur", onBlur);
+        };
+    });
+
 
   return ( 
       <AuthProvider>
